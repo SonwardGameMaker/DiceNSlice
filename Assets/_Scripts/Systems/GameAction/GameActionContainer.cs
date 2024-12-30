@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GameAction
+public abstract class GameActionContainer
 {
     protected string _name;
     protected Sprite _sprite;
