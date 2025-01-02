@@ -21,25 +21,34 @@ public class Character : MonoBehaviour
     #endregion
 
     #region init
-    public void Setup()
+    public virtual void Setup()
     {
-        _shields = 0;
-
         _dice = GetComponent<Dice>();
         _dice.Setup(this);
 
-        _statusEffectSystem = GetComponent<StatusEffectSystem>();
-
-        _maxHealth.OnValueChanged += OnMaxHealthValueChanged;
+        Init();
     }
 
-    public void Setup(CharacterSO so)
+    public virtual void Setup(CharacterSO so)
     {
         _name = so.name;
         _maxHealth = new ModVar(so.MaxHealth);
         _currentHealth = so.CurrentHealth;
 
-        Setup();
+
+        _dice = GetComponent<Dice>();
+        _dice.Setup(this, so.GetDiceSides());
+
+        Init();
+    }
+
+    private void Init()
+    {
+        _shields = 0;
+
+        _statusEffectSystem = GetComponent<StatusEffectSystem>();
+
+        _maxHealth.OnValueChanged += OnMaxHealthValueChanged;
     }
 
     private void OnDestroy()
