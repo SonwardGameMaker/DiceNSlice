@@ -6,7 +6,32 @@ using UnityEngine.UI;
 
 public class CharacterFrame : MonoBehaviour
 {
-    [SerializeField] TMP_Text _charName;
-    [SerializeField] Image _portraitImage;
-    [SerializeField] HealthPointsLabel _healthPointsLabel;
+    #region fields
+    [SerializeField] private Character _character;
+
+    private TMP_Text _charName;
+    private Image _portraitImage;
+    private HealthPointsLabel _healthPointsLabel;
+    #endregion
+
+    #region init
+    public void Setup()
+    {
+        _charName.text = _character.Name;
+        _portraitImage.sprite = _character.Portrait;
+
+        _healthPointsLabel = GetComponentInChildren<HealthPointsLabel>();
+        _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
+    }
+
+    public void Setup(Character character)
+    {
+        _character = character;
+        Setup();
+    }
+    #endregion
+
+    #region properties
+    public Character Character { get => _character; }
+    #endregion
 }

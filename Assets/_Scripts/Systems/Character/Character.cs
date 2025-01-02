@@ -7,11 +7,17 @@ public class Character : MonoBehaviour
 {
     #region fields
     [SerializeField] protected string _name;
+    [SerializeField] protected Sprite _portrait;
     [SerializeField] protected ModVar _maxHealth;
     [SerializeField] protected int _currentHealth;
+    [SerializeField] protected int _characterSize;
     protected int _shields;
     protected StatusEffectSystem _statusEffectSystem;
     protected Dice _dice;
+    #endregion
+
+    #region events
+    public event Action OnMaxHealthValueChanged;
     #endregion
 
     #region init
@@ -23,6 +29,8 @@ public class Character : MonoBehaviour
         _dice.Setup(this);
 
         _statusEffectSystem = GetComponent<StatusEffectSystem>();
+
+        _maxHealth.OnValueChanged += OnMaxHealthValueChanged;
     }
 
     public void Setup(CharacterSO so)
@@ -33,13 +41,20 @@ public class Character : MonoBehaviour
 
         Setup();
     }
+
+    private void OnDestroy()
+    {
+        _maxHealth.OnValueChanged -= OnMaxHealthValueChanged;
+    }
     #endregion
 
     #region properties
     public string Name { get => _name; }
+    public Sprite Portrait { get => _portrait; }
     public int MaxHealth { get => _maxHealth.CurrentValue; }
     public int MaxHealthBaseValue { get => _maxHealth.BaseValue; set => SetMaxHp(value); }
     public int CurrentHealth { get => _currentHealth; set => SetHp(value); }
+    public int CharacterSize { get => _characterSize; }
     public int Shields { get => _shields; set => SetShields(value); }
     public StatusEffectSystem StatusEffectManager { get => StatusEffectManager; }
     public Dice Dice { get => _dice; }
