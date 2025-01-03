@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    private const int MAX_PULL_CHARACTER_SIZE = 10;
+    private const int MAX_POOL_CHARACTER_SIZE = 10;
 
     [SerializeField] private UiManager uiManager;
 
@@ -32,7 +32,7 @@ public class CharacterManager : MonoBehaviour
     {
         _heroes = heroes;
 
-        if (CalculateCharSizePull(enemies) <= MAX_PULL_CHARACTER_SIZE)
+        if (CalculateCharSizePool(enemies) <= MAX_POOL_CHARACTER_SIZE)
         {
             _activeEnemies = enemies;
             _reinforcementsEnemies = new List<Enemy>();
@@ -96,7 +96,7 @@ public class CharacterManager : MonoBehaviour
 
         int activeSizePull = 0;
         int count = 0;
-        while (activeSizePull <= MAX_PULL_CHARACTER_SIZE)
+        while (activeSizePull <= MAX_POOL_CHARACTER_SIZE)
         {
             AddToActive();
             count++;
@@ -105,9 +105,9 @@ public class CharacterManager : MonoBehaviour
         for (int i = count; i < enemies.Count; i++)
             reinforcementsEnemy.Add(enemies[i]);
 
-        while (activeSizePull <= MAX_PULL_CHARACTER_SIZE && count < enemies.Count)
+        while (activeSizePull <= MAX_POOL_CHARACTER_SIZE && count < enemies.Count)
         {
-            if (activeSizePull + enemies[count].CharacterSize <= MAX_PULL_CHARACTER_SIZE)
+            if (activeSizePull + enemies[count].CharacterSize <= MAX_POOL_CHARACTER_SIZE)
             {
                 AddToActive();
             }    
@@ -124,7 +124,7 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    private int CalculateCharSizePull<T>(List<T> characters) where T : Character
+    private int CalculateCharSizePool<T>(List<T> characters) where T : Character
         => characters.Sum(c => c.CharacterSize);
 
     private Character CreateCharacter(CharacterSO so)
