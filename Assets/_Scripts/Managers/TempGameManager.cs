@@ -7,6 +7,8 @@ using UnityEngine;
 public class TempGameManager : MonoBehaviour
 {
     [SerializeField] private CombatManager _combatManager;
+    [SerializeField] private CharacterManager _characterManager;
+    [SerializeField] private UiManager _uiManager;
 
     [Header("Heroes")]
     [SerializeField] private HeroSO _hero1;
@@ -17,6 +19,8 @@ public class TempGameManager : MonoBehaviour
 
     [Header("Enemies")]
     [SerializeField] private List<EnemySO> _enemies;
+
+    
 
     #region init
     void Start()

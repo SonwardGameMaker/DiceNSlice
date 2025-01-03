@@ -9,9 +9,9 @@ public class CharacterFrame : MonoBehaviour
     #region fields
     [SerializeField] private Character _character;
 
-    private TMP_Text _charName;
-    private Image _portraitImage;
-    private HealthPointsLabel _healthPointsLabel;
+    [SerializeField] private TMP_Text _charName;
+    [SerializeField] private Image _portraitImage;
+    [SerializeField] private HealthPointsLabel _healthPointsLabel;
     #endregion
 
     #region init
@@ -19,8 +19,6 @@ public class CharacterFrame : MonoBehaviour
     {
         _charName.text = _character.Name;
         _portraitImage.sprite = _character.Portrait;
-
-        _healthPointsLabel = GetComponentInChildren<HealthPointsLabel>();
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
     }
 

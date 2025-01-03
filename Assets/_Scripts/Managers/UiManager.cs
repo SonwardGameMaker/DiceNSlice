@@ -40,28 +40,42 @@ public class UiManager : MonoBehaviour
     #region external interactions
     public void SetHeroes(List<Hero> heroes)
     {
-        // TODO
+        foreach (var hero in heroes)
+            AddHero(hero);
     }
 
     public void SetEnemies(List<Enemy> enemies)
     {
-        // TODO
+        foreach(var enemy in enemies)
+            AddEnemy(enemy);
     }
 
     public void AddHero(Hero hero)
     {
-        // TODO
+        GameObject go = Instantiate(_heroFramePrefab, Vector3.zero, Quaternion.identity);
+        go.transform.SetParent(_heroes.transform); // test if this work properly
+        go.GetComponent<CharacterFrame>().Setup(hero);
     }
 
-    public void RemoveHero(Hero hero)
+    public bool RemoveHero(Hero hero)
     {
-        // TODO
+        for(int i = 0; i < _heroes.transform.childCount; i++)
+        {
+            var tempHero = _heroes.transform.GetChild(i);
+            if (tempHero.GetComponent<CharacterFrame>().Character == hero)
+            {
+                Destroy(tempHero);
+            }
+        }
+
+        return false;
     }
 
     public void AddEnemy(Enemy enemy)
     {
         GameObject go = Instantiate(_enemyFramePrefab, Vector3.zero, Quaternion.identity);
         go.transform.SetParent(_enemies.transform); // test if this work properly
+        go.GetComponent<CharacterFrame>().Setup(enemy);
     }
 
     public void RemoveEnemy(Enemy enemy)

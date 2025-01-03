@@ -15,7 +15,10 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private Transform _enemyContainer;
 
     private List<Hero> _heroes;
+    private List<Hero> _activeHeroes;
+    private List<Hero> _deadHeroes;
     private List<Enemy> _activeEnemies;
+    private List<Enemy> _deadEnemies;
     private List<Enemy> _reinforcementsEnemies;
     private int _activeEnemiesPulSize;
 
@@ -44,42 +47,85 @@ public class CharacterManager : MonoBehaviour
     }
     #endregion
 
-    #region external interactions
+    #region CRUD Heroes
     public List<Hero> GetHeroes()
     {
-        //if (_heroContainer.childCount == 0)
-        //    return CreateHeroes();
-
         List<Hero> result = new List<Hero>();
         for (int i = 0; i < _heroContainer.childCount; i++)
             result.Add(_heroContainer.GetChild(i).GetComponent<Hero>());
         return result;
     }
 
-    public List<Enemy> GetEnemies()
-    {
-        //if (_enemyContainer.childCount == 0)
-        //    return CreateEnemies();
-
-        List<Enemy> result = new List<Enemy>();
-        for (int i = 0; i < _heroContainer.childCount; i++)
-            result.Add(_enemyContainer.GetChild(i).GetComponent<Enemy>());
-        return result;
-    }
-    #endregion
-
-    #region internal operations
     private List<Hero> CreateHeroes(List<HeroSO> heroes)
         => heroes.Select(h => CreateHero(h)).ToList();
 
     private Hero CreateHero(HeroSO so)
         => CreateCharacter(so) as Hero;
 
+    // TODO
+    #endregion
+
+    #region CRUD Enemies
+    public List<Enemy> GetEnemies()
+    {
+        List<Enemy> result = new List<Enemy>();
+        for (int i = 0; i < _heroContainer.childCount; i++)
+            result.Add(_enemyContainer.GetChild(i).GetComponent<Enemy>());
+        return result;
+    }
+
     private List<Enemy> CreateEnemies(List<EnemySO> enemies)
         => enemies.Select(e => CreateEnemy(e)).ToList();
 
     private Enemy CreateEnemy(EnemySO so)
         => CreateCharacter(so) as Enemy;
+
+    // TODO
+    #endregion
+
+    #region internal operations
+    /// <summary>
+    /// First list is for active enemies, second - for reinforcement
+    /// </summary>
+    /// <param name="enemies"></param>
+    /// <returns></returns>
+    private (List<Enemy>, List<Enemy>) SplitIntoReinforcements(List<Enemy> enemies)
+    {
+        List<Enemy> activeEnemies = new List<Enemy>();
+        List<Enemy> reinforcementsEnemy = new List<Enemy>();
+
+        int activeSizePull = 0;
+        int count = 0;
+        while (activeSizePull <= MAX_PULL_CHARACTER_SIZE)
+        {
+            AddToActive();
+            count++;
+        }
+
+        for (int i = count; i < enemies.Count; i++)
+            reinforcementsEnemy.Add(enemies[i]);
+
+        while (activeSizePull <= MAX_PULL_CHARACTER_SIZE && count < enemies.Count)
+        {
+            if (activeSizePull + enemies[count].CharacterSize <= MAX_PULL_CHARACTER_SIZE)
+            {
+                AddToActive();
+            }    
+            count++;
+        }
+
+        return new(activeEnemies, reinforcementsEnemy);
+
+        // Utils
+        void AddToActive()
+        {
+            activeEnemies.Add(enemies[count]);
+            activeSizePull += enemies[count].CharacterSize;
+        }
+    }
+
+    private int CalculateCharSizePull<T>(List<T> characters) where T : Character
+        => characters.Sum(c => c.CharacterSize);
 
     private Character CreateCharacter(CharacterSO so)
     {
@@ -104,34 +150,5 @@ public class CharacterManager : MonoBehaviour
 
         return result;
     }
-    #endregion
-    #region internal operations
-    /// <summary>
-    /// First list is for active enemies, second - for reinforcement
-    /// </summary>
-    /// <param name="enemies"></param>
-    /// <returns></returns>
-    private (List<Enemy>, List<Enemy>) SplitIntoReinforcements(List<Enemy> enemies)
-    {
-        List<Enemy> activeEnemies = new List<Enemy>();
-        List<Enemy> reinforcementsEnemy = new List<Enemy>();
-
-        int activeSizePull = 0;
-        int count = 0;
-        while (activeSizePull <= MAX_PULL_CHARACTER_SIZE)
-        {
-            activeEnemies.Add(enemies[count]);
-            activeSizePull += enemies[count].CharacterSize;
-            count++;
-        }
-
-        for (int i = count; i < enemies.Count; i++)
-            reinforcementsEnemy.Add(enemies[i]);
-
-        return new(activeEnemies, reinforcementsEnemy);
-    }
-
-    private int CalculateCharSizePull<T>(List<T> characters) where T : Character
-        => characters.Sum(c => c.CharacterSize);
     #endregion
 }

@@ -300,6 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cafe95cd4e70d4389f41f2d49406c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiManager: {fileID: 915429346}
+  _heroContainer: {fileID: 999696396}
+  _enemyContainer: {fileID: 1965694231}
 --- !u!1 &478080885
 GameObject:
   m_ObjectHideFlags: 0
@@ -946,6 +949,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyFrame
       objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9064604945480910522, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -988,7 +1015,6 @@ Transform:
   - {fileID: 1913068445}
   - {fileID: 1868417863}
   - {fileID: 356902248}
-  - {fileID: 1356741551}
   - {fileID: 915429345}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1205,37 +1231,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 808039883889724283, guid: 7eaa84dca2a227e44a0afb65bcf37e97, type: 3}
   m_PrefabInstance: {fileID: 5252272421403736052}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1356741550
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1356741551}
-  m_Layer: 0
-  m_Name: KeywordManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1356741551
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1356741550}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 982182917}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1407163632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,6 +1749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dbad60d28956c740bb7813cc6808160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterManager: {fileID: 356902249}
   _uiManager: {fileID: 915429346}
 --- !u!1 &1913068444
 GameObject:
@@ -1800,8 +1796,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _combatManager: {fileID: 1868417864}
-  _heroContainer: {fileID: 2071645300}
-  _enemyContainer: {fileID: 1818394134}
+  _characterManager: {fileID: 356902249}
+  _uiManager: {fileID: 915429346}
   _hero1: {fileID: 0}
   _hero2: {fileID: 0}
   _hero3: {fileID: 0}
@@ -2421,7 +2417,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 478080886}
   - {fileID: 982182917}
+  - {fileID: 478080886}
   - {fileID: 1780519777}
   - {fileID: 591983786}
