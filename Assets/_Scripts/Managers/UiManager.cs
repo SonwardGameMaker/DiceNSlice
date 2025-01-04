@@ -66,9 +66,8 @@ public class UiManager : MonoBehaviour
         }
 
         GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-        go.transform.SetParent(characterGroup.transform); // test if this work properly
+        go.transform.SetParent(characterGroup.transform, false);
         go.GetComponent<CharacterFrame>().Setup(character);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(characterGroup.GetComponent<RectTransform>());
     }
 
     public bool RemoveCharacter(Character character)

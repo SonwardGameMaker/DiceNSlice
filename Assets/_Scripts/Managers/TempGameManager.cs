@@ -31,18 +31,23 @@ public class TempGameManager : MonoBehaviour
         _uiManager.Setup(_characterManager.GetHeroes(), _characterManager.GetEnemies());
 
         // Event Subscription
-        _characterManager.OnCharacterCreated += OnCharacterCreated;
+        _characterManager.OnCharacterCreated += OnCharacterCreatedHandler;
+        _characterManager.OnCharacterDeleted += OnCharacterRemovedHandler;
     }
 
     private void OnDestroy()
     {
         // Event Unsubscription
-        _characterManager.OnCharacterCreated -= OnCharacterCreated;
+        _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
+        _characterManager.OnCharacterDeleted -= OnCharacterRemovedHandler;
     }
     #endregion
 
-    #region event hanlers
-    private void OnCharacterCreated(Character character)
+    #region event handlers
+    private void OnCharacterCreatedHandler(Character character)
         => _uiManager.AddCharacter(character);
+
+    private void OnCharacterRemovedHandler(Character character)
+        => _uiManager.RemoveCharacter(character);
     #endregion
 }

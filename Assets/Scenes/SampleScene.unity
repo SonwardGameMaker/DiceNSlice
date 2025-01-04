@@ -156,7 +156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 39.4814, y: -25.644417}
+  m_AnchoredPosition: {x: 39.481445, y: -25.644417}
   m_SizeDelta: {x: -78.9631, y: -51.2889}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &23702384
@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28cafe95cd4e70d4389f41f2d49406c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiManager: {fileID: 0}
+  _uiManager: {fileID: 915429346}
   _heroContainer: {fileID: 999696396}
   _enemyContainer: {fileID: 1965694231}
 --- !u!1 &478080885
@@ -1361,7 +1361,7 @@ MonoBehaviour:
     m_Top: 5
     m_Bottom: 5
   m_ChildAlignment: 5
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0

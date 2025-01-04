@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
     #endregion
 
     #region events
-    public event Action OnMaxHealthValueChanged;
+    public event Action<Character> OnCharacterChanged;
     #endregion
 
     #region init
@@ -48,12 +48,12 @@ public class Character : MonoBehaviour
 
         _statusEffectSystem = GetComponent<StatusEffectSystem>();
 
-        _maxHealth.OnValueChanged += OnMaxHealthValueChanged;
+        _maxHealth.OnValueChanged += OnCharacterChanegtTrigger;
     }
 
     private void OnDestroy()
     {
-        _maxHealth.OnValueChanged -= OnMaxHealthValueChanged;
+        _maxHealth.OnValueChanged -= OnCharacterChanegtTrigger;
     }
     #endregion
 
@@ -69,20 +69,54 @@ public class Character : MonoBehaviour
     public Dice Dice { get => _dice; }
     #endregion
 
+    #region external interactions
+    public void ChangeHp(int amount)
+    {
+        if (_currentHealth + amount > MaxHealth) _currentHealth = MaxHealth;
+        else _currentHealth += amount;
+
+        OnCharacterChanegtTrigger();
+    }
+
+    public void ChangeShields(int amount)
+    {
+        if (_shields + amount < 0) _shields = 0;
+        else _shields += amount;
+
+        OnCharacterChanegtTrigger();
+    }
+
+    public void AddHpModifier(Modifier modifier)
+    {
+        // TODO
+    }
+
+    public void RemoveHpModifier(Modifier modifier)
+    {
+        // TODO
+    }
+    #endregion
+
     #region internal operations
     protected void SetMaxHp(int amount)
     {
         if (amount < 0) throw new Exception("Value canot be less then zero");
         _maxHealth.BaseValue = amount;
+
+        OnCharacterChanegtTrigger();
     }
     protected void SetHp(int amount)
     {
         if (amount > _maxHealth.CurrentValue) throw new Exception("Current Health cannot be bigger than Max Health");
         SetValue(ref _currentHealth, amount);
+
+        OnCharacterChanegtTrigger();
     }
     protected void SetShields(int amount)
     {
         SetValue(ref _shields, amount);
+
+        OnCharacterChanegtTrigger();
     }
 
     protected void SetValue(ref int target,  int value)
@@ -90,5 +124,10 @@ public class Character : MonoBehaviour
         if (value < 0) throw new Exception("Value canot be less then zero");
         target = value;
     }
+    #endregion
+
+    #region event triggers
+    protected void OnCharacterChanegtTrigger()
+        => OnCharacterChanged?.Invoke(this);
     #endregion
 }

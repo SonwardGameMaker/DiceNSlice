@@ -15,9 +15,12 @@ public class CharacterManager : MonoBehaviour
     [SerializeField] private Transform _heroContainer;
     [SerializeField] private Transform _enemyContainer;
 
+    // heroes
     private List<Hero> _heroes;
     private List<Hero> _activeHeroes;
     private List<Hero> _deadHeroes;
+    // enemies
+    private List<Enemy> _enemies;
     private List<Enemy> _activeEnemies;
     private List<Enemy> _deadEnemies;
     private List<Enemy> _reinforcementsEnemies;
@@ -25,6 +28,8 @@ public class CharacterManager : MonoBehaviour
 
     #region events
     public event Action<Character> OnCharacterCreated;
+    public event Action<Character> OnCharacterDeleted;
+    public event Action<Character> OnCharacterChanged;
     #endregion
 
     #region init
@@ -142,15 +147,54 @@ public class CharacterManager : MonoBehaviour
             container = _enemyContainer;
         }
 
-        GameObject character = new GameObject(so.name + nameSuffix);
+        GameObject character = new GameObject(so.Name + nameSuffix);
         character.transform.SetParent(container.transform);
         Character result = character.AddComponent(type) as Character;
         character.AddComponent<Dice>();
         result.Setup(so);
 
         OnCharacterCreated?.Invoke(result);
+        result.OnCharacterChanged += OnCharacterChangedHandler;
 
         return result;
+    }
+
+    private bool RemoveCharacter(Character character)
+    {
+        Transform container;
+
+        if (character is Hero)
+        {
+            container = _heroContainer;
+        }
+        else
+        {
+            container = _enemyContainer;
+        }
+
+        if (container == null || character == null)
+            return false;
+
+        foreach (Transform child in container)
+        {
+            Character childCharacter = child.GetComponent<Character>();
+            if (childCharacter != null && childCharacter == character)
+            {
+                character.OnCharacterChanged -= OnCharacterChangedHandler;
+                OnCharacterDeleted?.Invoke(character);
+                Destroy(child.gameObject);
+                return true;
+            }
+        }
+
+        return false;
+    }
+    #endregion
+
+    #region event hanlers
+    private void OnCharacterChangedHandler(Character character)
+    {
+        OnCharacterChanged?.Invoke(character);
     }
     #endregion
 }
