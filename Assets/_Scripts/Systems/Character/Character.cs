@@ -32,9 +32,9 @@ public class Character : MonoBehaviour
     public virtual void Setup(CharacterSO so)
     {
         _name = so.name;
+        _portrait = so.Portrait;
         _maxHealth = new ModVar(so.MaxHealth);
         _currentHealth = so.CurrentHealth;
-
 
         _dice = GetComponent<Dice>();
         _dice.Setup(this, so.GetDiceSides());

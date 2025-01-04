@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Build;
 using UnityEngine;
 
 public class CombatManager : MonoBehaviour
@@ -14,9 +13,9 @@ public class CombatManager : MonoBehaviour
     #endregion
 
     #region init
-    public void Setup(List<HeroSO> heroes, List<EnemySO> enemies)
+    public void Setup()
     {
-
+        // TODO
     }
     #endregion
 

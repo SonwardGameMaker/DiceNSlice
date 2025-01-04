@@ -8,7 +8,8 @@ public class CharacterManager : MonoBehaviour
 {
     private const int MAX_POOL_CHARACTER_SIZE = 10;
 
-    [SerializeField] private UiManager uiManager;
+    #region fields
+    [SerializeField] private UiManager _uiManager;
 
     [Header("Containers")]
     [SerializeField] private Transform _heroContainer;
@@ -20,13 +21,15 @@ public class CharacterManager : MonoBehaviour
     private List<Enemy> _activeEnemies;
     private List<Enemy> _deadEnemies;
     private List<Enemy> _reinforcementsEnemies;
-    private int _activeEnemiesPulSize;
+    #endregion
+
+    #region events
+    public event Action<Character> OnCharacterCreated;
+    #endregion
 
     #region init
-    public void Setup()
-    {
-        _activeEnemiesPulSize = 0;
-    }
+    public void Setup(List<HeroSO> heroes, List<EnemySO> enemies)
+        => Setup(CreateHeroes(heroes), CreateEnemies(enemies));
 
     public void Setup(List<Hero> heroes, List<Enemy> enemies)
     {
@@ -47,7 +50,7 @@ public class CharacterManager : MonoBehaviour
     }
     #endregion
 
-    #region CRUD Heroes
+    #region exteral interactions
     public List<Hero> GetHeroes()
     {
         List<Hero> result = new List<Hero>();
@@ -56,29 +59,19 @@ public class CharacterManager : MonoBehaviour
         return result;
     }
 
-    private List<Hero> CreateHeroes(List<HeroSO> heroes)
-        => heroes.Select(h => CreateHero(h)).ToList();
+    public List<Hero> CreateHeroes(List<HeroSO> heroes)
+        => heroes.Select(h => CreateCharacter(h) as Hero).ToList();
 
-    private Hero CreateHero(HeroSO so)
-        => CreateCharacter(so) as Hero;
-
-    // TODO
-    #endregion
-
-    #region CRUD Enemies
     public List<Enemy> GetEnemies()
     {
         List<Enemy> result = new List<Enemy>();
-        for (int i = 0; i < _heroContainer.childCount; i++)
+        for (int i = 0; i < _enemyContainer.childCount; i++)
             result.Add(_enemyContainer.GetChild(i).GetComponent<Enemy>());
         return result;
     }
 
-    private List<Enemy> CreateEnemies(List<EnemySO> enemies)
-        => enemies.Select(e => CreateEnemy(e)).ToList();
-
-    private Enemy CreateEnemy(EnemySO so)
-        => CreateCharacter(so) as Enemy;
+    public List<Enemy> CreateEnemies(List<EnemySO> enemies)
+        => enemies.Select(h => CreateCharacter(h) as Enemy).ToList();
 
     // TODO
     #endregion
@@ -127,26 +120,35 @@ public class CharacterManager : MonoBehaviour
     private int CalculateCharSizePool<T>(List<T> characters) where T : Character
         => characters.Sum(c => c.CharacterSize);
 
+    private List<Character> CreateCharacters(List<CharacterSO> characters)
+        => characters.Select(character => CreateCharacter(character)).ToList();
+
     private Character CreateCharacter(CharacterSO so)
     {
         string nameSuffix;
         Type type;
+        Transform container;
 
         if (so is HeroSO)
         {
             nameSuffix = "_Hero";
             type = typeof(Hero);
+            container = _heroContainer;
         }
         else
         {
             nameSuffix = "_Enemy";
             type = typeof(Enemy);
+            container = _enemyContainer;
         }
 
         GameObject character = new GameObject(so.name + nameSuffix);
+        character.transform.SetParent(container.transform);
         Character result = character.AddComponent(type) as Character;
         character.AddComponent<Dice>();
         result.Setup(so);
+
+        OnCharacterCreated?.Invoke(result);
 
         return result;
     }
