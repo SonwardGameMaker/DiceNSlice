@@ -1462,12 +1462,7 @@ MonoBehaviour:
   _combatManager: {fileID: 1868417864}
   _characterManager: {fileID: 356902249}
   _uiManager: {fileID: 915429346}
-  _hero1: {fileID: 11400000, guid: 7f6e8b3e6fa1e85468742b914afaf673, type: 2}
-  _hero2: {fileID: 0}
-  _hero3: {fileID: 0}
-  _hero4: {fileID: 0}
-  _hero5: {fileID: 0}
-  _enemies: []
+  _initSO: {fileID: 11400000, guid: a150d19de834b0d4bbc83f21d08495ea, type: 2}
 --- !u!1 &1965631350
 GameObject:
   m_ObjectHideFlags: 0

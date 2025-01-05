@@ -53,6 +53,26 @@ public class ModVar
         CalculateCurrentValue();
         return true; //TODO Make method try add in modifiers, that will define adding behaviour for each modifier class
     }
+
+    public bool RemoveModifier(Modifier modifier)
+    {
+        bool result;
+
+        if (modifier.Type == ModifierType.Additive)
+            result = _additiveModifiers.Remove(modifier);
+        else
+           result = _multiplicativeModifiers.Remove(modifier);
+
+        CalculateCurrentValue();
+        return result; // Check if works
+    }
+
+    public void ClearModifiers()
+    {
+        _additiveModifiers?.Clear();
+        _multiplicativeModifiers?.Clear();
+        CalculateCurrentValue(); // Check if works
+    }
     #endregion
 
     #region internal operations

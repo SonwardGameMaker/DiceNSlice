@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
     protected int _shields;
     protected StatusEffectSystem _statusEffectSystem;
     protected Dice _dice;
+    protected List<StatusEffect> _statusEffects;
     #endregion
 
     #region events
@@ -67,6 +68,7 @@ public class Character : MonoBehaviour
     public int Shields { get => _shields; set => SetShields(value); }
     public StatusEffectSystem StatusEffectManager { get => StatusEffectManager; }
     public Dice Dice { get => _dice; }
+    public List<StatusEffect> StatusEffects { get => _statusEffects; }
     #endregion
 
     #region external interactions
@@ -94,6 +96,12 @@ public class Character : MonoBehaviour
     public void RemoveHpModifier(Modifier modifier)
     {
         // TODO
+    }
+
+    public virtual void ResetCharacter()
+    {
+        // Reset Status Effects
+        
     }
     #endregion
 

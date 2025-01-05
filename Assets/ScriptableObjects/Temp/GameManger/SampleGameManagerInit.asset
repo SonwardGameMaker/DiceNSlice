@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98b06fabe9caa954389bf1f1210a4b25, type: 3}
-  m_Name: SampleHero
+  m_Script: {fileID: 11500000, guid: 7721838956c98854487d9aa33f286d0b, type: 3}
+  m_Name: SampleGameManagerInit
   m_EditorClassIdentifier: 
-  _name: SampleHatHero
-  _portrait: {fileID: 21300000, guid: 52499803dce846b46b67c2b0ef6d0728, type: 3}
-  _maxHealth: 5
-  _currentHealth: 5
-  _characterSize: 2
-  _heroClass: 0
+  _heroes:
+  - {fileID: 11400000, guid: 7f6e8b3e6fa1e85468742b914afaf673, type: 2}
+  _enemies: []
