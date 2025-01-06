@@ -14,7 +14,6 @@ public class Character : MonoBehaviour
     protected int _shields;
     protected StatusEffectSystem _statusEffectSystem;
     protected Dice _dice;
-    protected List<StatusEffect> _statusEffects;
     #endregion
 
     #region events
@@ -32,7 +31,7 @@ public class Character : MonoBehaviour
 
     public virtual void Setup(CharacterSO so)
     {
-        _name = so.name;
+        _name = so.Name;
         _portrait = so.Portrait;
         _maxHealth = new ModVar(so.MaxHealth);
         _currentHealth = so.CurrentHealth;
@@ -68,7 +67,6 @@ public class Character : MonoBehaviour
     public int Shields { get => _shields; set => SetShields(value); }
     public StatusEffectSystem StatusEffectManager { get => StatusEffectManager; }
     public Dice Dice { get => _dice; }
-    public List<StatusEffect> StatusEffects { get => _statusEffects; }
     #endregion
 
     #region external interactions
@@ -89,14 +87,10 @@ public class Character : MonoBehaviour
     }
 
     public void AddHpModifier(Modifier modifier)
-    {
-        // TODO
-    }
+        => _maxHealth.AddModifier(modifier);
 
     public void RemoveHpModifier(Modifier modifier)
-    {
-        // TODO
-    }
+        => _maxHealth.RemoveModifier(modifier);
 
     public virtual void ResetCharacter()
     {

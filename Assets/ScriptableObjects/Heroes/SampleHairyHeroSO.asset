@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98b06fabe9caa954389bf1f1210a4b25, type: 3}
-  m_Name: SampleHatHero
+  m_Name: SampleHairyHeroSO
   m_EditorClassIdentifier: 
-  _name: Hat
-  _portrait: {fileID: 21300000, guid: 52499803dce846b46b67c2b0ef6d0728, type: 3}
+  _name: Hairy
+  _portrait: {fileID: 21300000, guid: 5967872078b5c7643915261a01a2c0f7, type: 3}
   _maxHealth: 5
   _currentHealth: 5
   _characterSize: 2
-  _heroClass: 0
+  _heroClass: 1
   _heroLevel: 1
