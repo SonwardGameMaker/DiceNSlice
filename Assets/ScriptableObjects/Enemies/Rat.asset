@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rat
   m_EditorClassIdentifier: 
   _name: Rat
-  _portrait: {fileID: 0}
+  _portrait: {fileID: 21300000, guid: ed04f15c4b19d494c8a260cdbc5ca631, type: 3}
   _maxHealth: 3
   _currentHealth: 3
   _characterSize: 1
