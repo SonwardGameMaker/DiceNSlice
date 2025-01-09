@@ -619,6 +619,7 @@ MonoBehaviour:
   _enemyFramePrefab: {fileID: 3691547817224736254, guid: 42b4e88c6e052f4449d441506b8325ef, type: 3}
   _heroes: {fileID: 2071645301}
   _enemies: {fileID: 1818394135}
+  _deltaMoveCoef: 4
 --- !u!1 &941508120
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,6 +789,7 @@ Transform:
   - {fileID: 1868417863}
   - {fileID: 356902248}
   - {fileID: 915429345}
+  - {fileID: 1901811587}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &999696395
@@ -1415,6 +1417,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterManager: {fileID: 356902249}
   _uiManager: {fileID: 915429346}
+--- !u!1 &1901811586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1901811587}
+  - component: {fileID: 1901811588}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1901811587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901811586}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 982182917}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1901811588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901811586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b34836c685b68224dac902cc22ce9c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1913068444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1459,9 +1505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4400c92d4bb3a594fa9a3f25e2c35223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _combatManager: {fileID: 1868417864}
   _characterManager: {fileID: 356902249}
+  _combatManager: {fileID: 1868417864}
   _uiManager: {fileID: 915429346}
+  _inputManager: {fileID: 1901811588}
   _initSO: {fileID: 11400000, guid: a150d19de834b0d4bbc83f21d08495ea, type: 2}
 --- !u!1 &1965631350
 GameObject:

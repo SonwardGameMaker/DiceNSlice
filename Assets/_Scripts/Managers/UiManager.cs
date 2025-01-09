@@ -15,6 +15,9 @@ public class UiManager : MonoBehaviour
     [SerializeField] private VerticalLayoutGroup _heroes;
     [SerializeField] private VerticalLayoutGroup _enemies;
 
+    [Header("Other")]
+    [SerializeField] int _deltaMoveCoef;
+
     private bool _isSet = false;
     private float deltaMove;
     #endregion
@@ -28,17 +31,12 @@ public class UiManager : MonoBehaviour
     {
         if (_isSet) return;
 
-        deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / 2f;
+        deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
         Debug.Log($"Delta Move: {deltaMove}");
         SetHeroes(heroes);
         SetEnemies(enemies);
     }
     #endregion
-
-    private void Update()
-    {
-        // TODO trigger OnCharacterClicked
-    }
 
     #region external interactions
     public void SetHeroes(List<Hero> heroes)

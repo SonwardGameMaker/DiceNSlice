@@ -1,0 +1,76 @@
+{
+    "name": "PlayerInput",
+    "maps": [
+        {
+            "name": "UI",
+            "id": "83cf8173-c517-48fa-8c2e-9b8a14119c81",
+            "actions": [
+                {
+                    "name": "ActionInteract",
+                    "type": "Button",
+                    "id": "600ffc4f-09c0-459f-becf-40bb53ce4f8c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "InfoInteract",
+                    "type": "Button",
+                    "id": "f064613c-0e42-4c38-b93b-5f2574211b47",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "fc10c0de-6502-44e3-ae9c-7cb87b6f151f",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InfoInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "50adb099-280d-41ab-a556-904fe3016ace",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InfoInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d589e190-3dd9-4287-aa54-b7d0e62c7be5",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1872f2af-3238-4fde-8d6f-0ce2d0704c9a",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ActionInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
