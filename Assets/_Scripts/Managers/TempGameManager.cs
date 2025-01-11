@@ -75,11 +75,23 @@ public class TempGameManager : MonoBehaviour
     {
         _inputManager.OnInteractClicked += OnInteractionClickedHandler;
         _inputManager.OnInfoClicked += OnInfoClickedHandler;
+
+        // Buttons
+        _inputManager.OnRerollClicked += OnRerollClickedHandler;
+        _inputManager.OnCancelRerollClicked += OnCancelRerollClickedHandler;
+        _inputManager.OnDoneRerollingClicked += OnDoneRerollingClickedHandler;
+        _inputManager.OnNextTurnClicked += OnNextTurnClickedHandler;
     }
     private void InputManagerUnsubscription()
     {
         _inputManager.OnInteractClicked -= OnInteractionClickedHandler;
         _inputManager.OnInfoClicked -= OnInfoClickedHandler;
+
+        // Buttons
+        _inputManager.OnRerollClicked -= OnRerollClickedHandler;
+        _inputManager.OnCancelRerollClicked -= OnCancelRerollClickedHandler;
+        _inputManager.OnDoneRerollingClicked -= OnDoneRerollingClickedHandler;
+        _inputManager.OnNextTurnClicked -= OnNextTurnClickedHandler;
     }
     #endregion
 
@@ -111,5 +123,30 @@ public class TempGameManager : MonoBehaviour
         // TODO
         Debug.Log($"Info Clicked on {position}");
     }
+
+    private void OnRerollClickedHandler()
+    {
+        // TODO: Implement reroll clicked behavior
+        Debug.Log("Reroll button clicked.");
+    }
+
+    private void OnCancelRerollClickedHandler()
+    {
+        // TODO: Implement cancel reroll clicked behavior
+        Debug.Log("Cancel reroll button clicked.");
+    }
+
+    private void OnDoneRerollingClickedHandler()
+    {
+        // TODO: Implement done rerolling clicked behavior
+        Debug.Log("Done rerolling button clicked.");
+    }
+
+    private void OnNextTurnClickedHandler()
+    {
+        // TODO: Implement next turn clicked behavior
+        Debug.Log("Next turn button clicked.");
+    }
+
     #endregion
 }

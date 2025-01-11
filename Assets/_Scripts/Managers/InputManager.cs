@@ -15,9 +15,15 @@ public class InputManager : MonoBehaviour
     #region events
     public event Action<Vector3> OnInteractClicked;
     public event Action<Vector3> OnInfoClicked;
+
+    // Buttons
+    public event Action OnRerollClicked;
+    public event Action OnCancelRerollClicked;
+    public event Action OnDoneRerollingClicked;
+    public event Action OnNextTurnClicked;
     #endregion
 
-    #region monobehaviour methods
+    #region MonoBehaviour methods
     private void Awake()
     {
         _playerInput = new PlayerInput();
@@ -46,6 +52,34 @@ public class InputManager : MonoBehaviour
         _info.Disable();
 
         _playerInput.Disable();
+    }
+    #endregion
+
+    #region external interactions
+    public void RerollButtonPressed()
+    {
+        // TODO
+        // This method need to work like this:
+        // if (smt)
+        //     OnRerollClicked?.Invoke();
+        //  else
+        //      OnCancelRerollClicked?.Invoke();
+
+        // Temp realization:
+        OnRerollClicked?.Invoke();
+    }
+
+    public void NextButtonPressed()
+    {
+        // TODO
+        // This method need to work like this:
+        // if (smt)
+        //     OnDoneRerollingClicked?.Invoke();
+        //  else
+        //      OnNextTurnClicked?.Invoke();
+
+        // Temp realization:
+        OnNextTurnClicked?.Invoke();
     }
     #endregion
 
