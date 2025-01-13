@@ -23,7 +23,7 @@ public class CharacterFrame : MonoBehaviour
         _charName.text = _character.Name;
         _portraitImage.sprite = _character.Portrait;
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
-        _defaultPosition = transform.position;
+        _defaultPosition = Vector3.zero;
     }
 
     public void Setup(Character character)

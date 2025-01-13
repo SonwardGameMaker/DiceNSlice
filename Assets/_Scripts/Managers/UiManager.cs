@@ -103,6 +103,10 @@ public class UiManager : MonoBehaviour
     {
         List<RaycastResult> raycastResults = GetRaycastResults(position);
 
+        return IsUiElementSelected(raycastResults);
+    }
+    public bool IsUiElementSelected(List<RaycastResult> raycastResults)
+    {
         foreach (var raycastResult in raycastResults)
         {
             if (raycastResult.gameObject.layer == LayerMask.GetMask("UI"))
@@ -117,12 +121,14 @@ public class UiManager : MonoBehaviour
     public Character IsCharacterSelected(Vector3 position)
     {
         List<RaycastResult> raycastResults = GetRaycastResults(position);
-        Debug.Log($"raycast result count: {raycastResults.Count}");
 
+        return IsCharacterSelected(raycastResults);
+    }
+    public Character IsCharacterSelected(List<RaycastResult> raycastResults)
+    {
         foreach (var raycastResult in raycastResults)
         {
-            Debug.Log("Raycast result" + raycastResult);
-            CharacterFrame characterFrame = raycastResult.gameObject.GetComponentInChildren<CharacterFrame>();
+            CharacterFrame characterFrame = raycastResult.gameObject.GetComponent<CharacterFrame>();
             if (characterFrame != null)
             {
                 return characterFrame.Character;
@@ -131,6 +137,26 @@ public class UiManager : MonoBehaviour
 
         return null;
     }
+
+    public List<RaycastResult> GetRaycastResults(Vector3 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = position
+        };
+
+        //Debug.Log($"Position: {position.x}, {position.y}, {position.z}");
+
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+        return raycastResults;
+    }
+    #endregion
+
+    #region static methods
+    public static Vector3 ToWorldPosition(Vector3 position)
+        => Camera.main.WorldToScreenPoint(position);
     #endregion
 
     #region internal operations
@@ -145,7 +171,7 @@ public class UiManager : MonoBehaviour
 
         for (int i = 0; i < characterGroup.transform.childCount; i++)
         {
-            var tempCharacter = characterGroup.transform.GetChild(i).GetComponent<CharacterFrame>();
+            var tempCharacter = characterGroup.transform.GetChild(i).GetComponentInChildren<CharacterFrame>();
             if (tempCharacter.Character == character)
             {
                 return tempCharacter;
@@ -153,21 +179,6 @@ public class UiManager : MonoBehaviour
         }
 
         return null;
-    }
-
-    private List<RaycastResult> GetRaycastResults(Vector3 position)
-    {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
-        {
-            position = position
-        };
-
-        Debug.Log($"Position: {position.x}, {position.y}, {position.z}");
-
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, raycastResults);
-
-        return raycastResults;
     }
     #endregion
 }

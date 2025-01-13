@@ -82,9 +82,9 @@ public class InputManager : MonoBehaviour
 
     #region internal interactions
     private void OnInteractTriggered(InputAction.CallbackContext context)
-        => OnInteractClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition)); // this may not work correctly on tpuchscreen
+        => OnInteractClicked?.Invoke(Input.mousePosition); // this may not work correctly on tpuchscreen
 
     private void OnInfoTriggered(InputAction.CallbackContext context)
-        => OnInfoClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition)); // this may not work correctly on tpuchscreen
+        => OnInfoClicked?.Invoke(Input.mousePosition); // this may not work correctly on tpuchscreen
     #endregion
 }

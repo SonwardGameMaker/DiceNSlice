@@ -1122,7 +1122,7 @@ MonoBehaviour:
   _heroes: {fileID: 2071645301}
   _enemies: {fileID: 1818394135}
   _buttons: {fileID: 1407163634}
-  _deltaMoveCoef: 4
+  _deltaMoveCoef: 10
 --- !u!1 &941508120
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,8 +1997,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dbad60d28956c740bb7813cc6808160, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterManager: {fileID: 356902249}
-  _uiManager: {fileID: 915429346}
 --- !u!1 &1901811586
 GameObject:
   m_ObjectHideFlags: 0

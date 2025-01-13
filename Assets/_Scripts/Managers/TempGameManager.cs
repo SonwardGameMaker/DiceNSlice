@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TempGameManager : MonoBehaviour
 {
@@ -129,10 +130,13 @@ public class TempGameManager : MonoBehaviour
     #region Input Manager handlers
     private void OnInteractionClickedHandler(Vector3 position)
     {
-        bool isOnUi = _uiManager.IsUiElementSelected(position);
-        Character isOnCharacter = _uiManager.IsCharacterSelected(position);
+        //Debug.Log($"{nameof(OnInfoClickedHandler)} started");
 
-        if (isOnCharacter) // Check if this not null check
+        List<RaycastResult> raycastResults = _uiManager.GetRaycastResults(position);
+        bool isOnUi = _uiManager.IsUiElementSelected(raycastResults);
+        Character isOnCharacter = _uiManager.IsCharacterSelected(raycastResults);
+
+        if (isOnCharacter != null)
         {
             _combatManager.SelectCharacter(isOnCharacter);
             return;
@@ -147,6 +151,7 @@ public class TempGameManager : MonoBehaviour
         }
         else
         {
+            Vector3 worldPosition = UiManager.ToWorldPosition(position);
             // TODO
         }
     }

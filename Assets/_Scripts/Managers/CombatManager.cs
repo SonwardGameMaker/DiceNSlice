@@ -36,7 +36,7 @@ public class CombatManager : MonoBehaviour
     public void SelectCharacter(Character character)
     {
         // temp
-        Debug.Log($"{typeof(CharacterManager)} - {nameof(SelectCharacter)}");
+        //Debug.Log($"{typeof(CharacterManager)} - {nameof(SelectCharacter)}");
         if (character is Hero hero)
         {
             ActivateHero(hero);
@@ -47,7 +47,7 @@ public class CombatManager : MonoBehaviour
     {
 
         // temp
-        Debug.Log($"{typeof(CharacterManager)} - {nameof(Cancel)}");
+        //Debug.Log($"{typeof(CharacterManager)} - {nameof(Cancel)}");
         DeactivateHero();
     }
     #endregion
