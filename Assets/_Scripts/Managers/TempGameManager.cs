@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class TempGameManager : MonoBehaviour
 {
+    #region fields
     [SerializeField] private CharacterManager _characterManager;
     [SerializeField] private CombatManager _combatManager;
     [SerializeField] private UiManager _uiManager;
@@ -13,7 +14,7 @@ public class TempGameManager : MonoBehaviour
 
     [Header("Init")]
     [SerializeField] private TempGameManagerInitSO _initSO;
-
+    #endregion
 
     #region init
     private void Start()
@@ -53,21 +54,23 @@ public class TempGameManager : MonoBehaviour
     // Combat Manager
     private void CombatManagerSubscription()
     {
-        // TODO
+        _combatManager.OnHeroActivated += OnHeroActivatedHandler;
+        _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
     }
     private void CombatManagerUnsubscription()
     {
-
+        _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
+        _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
     }
 
     // UI Manager
     private void UiManagerSubscription()
     {
-        // TODO
+
     }
     private void UimanagerUnsubscription()
     {
-        // TODO
+
     }
 
     // Input Manager
@@ -104,24 +107,54 @@ public class TempGameManager : MonoBehaviour
     #endregion
 
     #region Combat Manager event handlers
+    private void OnHeroActivatedHandler(Hero hero)
+    {
+        _uiManager.MoveCharacterForvard(hero);
+    }
 
+    private void OnHeroDeactivatedHandler(Hero hero)
+    {
+        _uiManager.MoveCharacterBack(hero);
+    }
     #endregion
 
     #region UI Manager event handlers
-
+    private void OnCharacterClickedHandler(Character character)
+    {
+        // Temp debug realization, TODO
+        _uiManager.MoveCharacterForvard(character);
+    }
     #endregion
 
     #region Input Manager handlers
     private void OnInteractionClickedHandler(Vector3 position)
     {
-        // TODO
-        Debug.Log($"Interact Clicked on {position}");
+        bool isOnUi = _uiManager.IsUiElementSelected(position);
+        Character isOnCharacter = _uiManager.IsCharacterSelected(position);
+
+        if (isOnCharacter) // Check if this not null check
+        {
+            _combatManager.SelectCharacter(isOnCharacter);
+            return;
+        }
+
+        _combatManager.Cancel();
+
+        if (isOnUi)
+        {
+            foreach (var hero in _characterManager.GetHeroes())
+                _uiManager.MoveCharacterBack(hero);
+        }
+        else
+        {
+            // TODO
+        }
     }
 
     private void OnInfoClickedHandler(Vector3 position)
     {
         // TODO
-        Debug.Log($"Info Clicked on {position}");
+        //Debug.Log($"Info Clicked on {position}");
     }
 
     private void OnRerollClickedHandler()

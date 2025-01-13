@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -14,16 +15,13 @@ public class UiManager : MonoBehaviour
     [Header("UI Components")]
     [SerializeField] private VerticalLayoutGroup _heroes;
     [SerializeField] private VerticalLayoutGroup _enemies;
+    [SerializeField] private ButtonUiController _buttons;
 
     [Header("Other")]
     [SerializeField] int _deltaMoveCoef;
 
     private bool _isSet = false;
     private float deltaMove;
-    #endregion
-
-    #region events
-    public event Action<Character> OnCharacterClicked;
     #endregion
 
     #region init
@@ -82,10 +80,8 @@ public class UiManager : MonoBehaviour
 
         return false;
     }
-    #endregion
 
-    #region internal operations
-    private void MoveCharacterForvard(Character character)
+    public void MoveCharacterForvard(Character character)
     {
         var frame = GetCharacterFrame(character);
         if (frame != null)
@@ -94,7 +90,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    private void MoveCharacterBack(Character character)
+    public void MoveCharacterBack(Character character)
     {
         var frame = GetCharacterFrame(character);
         if (frame != null)
@@ -103,6 +99,41 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public bool IsUiElementSelected(Vector3 position)
+    {
+        List<RaycastResult> raycastResults = GetRaycastResults(position);
+
+        foreach (var raycastResult in raycastResults)
+        {
+            if (raycastResult.gameObject.layer == LayerMask.GetMask("UI"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Character IsCharacterSelected(Vector3 position)
+    {
+        List<RaycastResult> raycastResults = GetRaycastResults(position);
+        Debug.Log($"raycast result count: {raycastResults.Count}");
+
+        foreach (var raycastResult in raycastResults)
+        {
+            Debug.Log("Raycast result" + raycastResult);
+            CharacterFrame characterFrame = raycastResult.gameObject.GetComponentInChildren<CharacterFrame>();
+            if (characterFrame != null)
+            {
+                return characterFrame.Character;
+            }
+        }
+
+        return null;
+    }
+    #endregion
+
+    #region internal operations
     private CharacterFrame GetCharacterFrame(Character character)
     {
         VerticalLayoutGroup characterGroup;
@@ -122,6 +153,21 @@ public class UiManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private List<RaycastResult> GetRaycastResults(Vector3 position)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = position
+        };
+
+        Debug.Log($"Position: {position.x}, {position.y}, {position.z}");
+
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
+
+        return raycastResults;
     }
     #endregion
 }

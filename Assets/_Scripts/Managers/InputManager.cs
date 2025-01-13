@@ -58,15 +58,12 @@ public class InputManager : MonoBehaviour
     #region external interactions
     public void RerollButtonPressed()
     {
-        // TODO
-        // This method need to work like this:
-        // if (smt)
-        //     OnRerollClicked?.Invoke();
-        //  else
-        //      OnCancelRerollClicked?.Invoke();
-
-        // Temp realization:
         OnRerollClicked?.Invoke();
+    }
+
+    public void UndoRerollsButtonPressed()
+    {
+        OnCancelRerollClicked?.Invoke();
     }
 
     public void NextButtonPressed()
@@ -85,9 +82,9 @@ public class InputManager : MonoBehaviour
 
     #region internal interactions
     private void OnInteractTriggered(InputAction.CallbackContext context)
-        => OnInteractClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        => OnInteractClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition)); // this may not work correctly on tpuchscreen
 
     private void OnInfoTriggered(InputAction.CallbackContext context)
-        => OnInfoClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        => OnInfoClicked?.Invoke(Camera.main.ScreenToWorldPoint(Input.mousePosition)); // this may not work correctly on tpuchscreen
     #endregion
 }

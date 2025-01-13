@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class RerollButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TMP_Text _maxRerollNumbers;
+    [SerializeField] private TMP_Text _currentRerollNumbers;
+
+    public void Setup(int maxRerolls, int currentRerolls)
     {
-        
+        SetMaxRerolls(maxRerolls);
+        SetCurrentRerolls(currentRerolls);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetMaxRerolls(int maxRerolls)
     {
-        
+        _maxRerollNumbers.text = maxRerolls.ToString();
+    }
+
+    public void SetCurrentRerolls(int  currentRerolls)
+    {
+        _currentRerollNumbers.text = currentRerolls.ToString();
     }
 }
