@@ -30,7 +30,6 @@ public class UiManager : MonoBehaviour
         if (_isSet) return;
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
-        Debug.Log($"Delta Move: {deltaMove}");
         SetHeroes(heroes);
         SetEnemies(enemies);
     }
@@ -83,10 +82,11 @@ public class UiManager : MonoBehaviour
 
     public void MoveCharacterForvard(Character character)
     {
+        int coef = character is Hero ? 1 : -1;
         var frame = GetCharacterFrame(character);
         if (frame != null)
         {
-            frame.MoveFrame(deltaMove);
+            frame.MoveFrame(coef * deltaMove);
         }
     }
 

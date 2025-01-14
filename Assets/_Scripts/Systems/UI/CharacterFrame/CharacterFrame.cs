@@ -13,17 +13,19 @@ public class CharacterFrame : MonoBehaviour
     [SerializeField] private Image _portraitImage;
     [SerializeField] private HealthPointsLabel _healthPointsLabel;
 
-    private Vector3 _defaultPosition;
+    RectTransform _rectTransform;
+    private Vector2 _defaultPosition;
     private bool _isMoved;
     #endregion
 
     #region init
     public void Setup()
     {
+        _rectTransform = GetComponent<RectTransform>();
         _charName.text = _character.Name;
         _portraitImage.sprite = _character.Portrait;
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
-        _defaultPosition = Vector3.zero;
+        _defaultPosition = Vector2.zero;
     }
 
     public void Setup(Character character)
@@ -46,7 +48,7 @@ public class CharacterFrame : MonoBehaviour
             return;
         }
 
-        transform.position = transform.position + new Vector3(delta, 0f, 0f);
+        _rectTransform.anchoredPosition = _rectTransform.anchoredPosition + new Vector2(delta, 0f);
         _isMoved = true;
     }
 
@@ -54,7 +56,7 @@ public class CharacterFrame : MonoBehaviour
     {
         if (!_isMoved) return;
 
-        transform.position = _defaultPosition;
+        _rectTransform.anchoredPosition = _defaultPosition;
         _isMoved = false;
     }
     #endregion
