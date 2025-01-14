@@ -105,7 +105,7 @@ public class CharacterManager : MonoBehaviour
 
         while (activeSizePull <= MAX_POOL_CHARACTER_SIZE && count < enemies.Count)
         {
-            if (activeSizePull + enemies[count].CharacterSize <= MAX_POOL_CHARACTER_SIZE)
+            if (activeSizePull + (int)enemies[count].CharacterSize <= MAX_POOL_CHARACTER_SIZE)
             {
                 AddToActive();
             }    
@@ -118,12 +118,12 @@ public class CharacterManager : MonoBehaviour
         void AddToActive()
         {
             activeEnemies.Add(enemies[count]);
-            activeSizePull += enemies[count].CharacterSize;
+            activeSizePull += (int)enemies[count].CharacterSize;
         }
     }
 
     private int CalculateCharSizePool<T>(List<T> characters) where T : Character
-        => characters.Sum(c => c.CharacterSize);
+        => characters.Sum(c => (int)c.CharacterSize);
 
     private List<Character> CreateCharacters(List<CharacterSO> characters)
         => characters.Select(character => CreateCharacter(character)).ToList();

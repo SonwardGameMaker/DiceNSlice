@@ -10,7 +10,7 @@ public class Character : MonoBehaviour
     [SerializeField] protected Sprite _portrait;
     [SerializeField] protected ModVar _maxHealth;
     [SerializeField] protected int _currentHealth;
-    [SerializeField] protected int _characterSize;
+    [SerializeField] protected CharacterSize _characterSize;
     protected int _shields;
     protected StatusEffectSystem _statusEffectSystem;
     protected Dice _dice;
@@ -63,7 +63,7 @@ public class Character : MonoBehaviour
     public int MaxHealth { get => _maxHealth.CurrentValue; }
     public int MaxHealthBaseValue { get => _maxHealth.BaseValue; set => SetMaxHp(value); }
     public int CurrentHealth { get => _currentHealth; set => SetHp(value); }
-    public int CharacterSize { get => _characterSize; }
+    public CharacterSize CharacterSize { get => _characterSize; }
     public int Shields { get => _shields; set => SetShields(value); }
     public StatusEffectSystem StatusEffectManager { get => StatusEffectManager; }
     public Dice Dice { get => _dice; }

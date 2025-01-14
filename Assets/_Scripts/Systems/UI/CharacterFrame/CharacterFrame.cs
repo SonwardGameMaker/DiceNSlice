@@ -22,16 +22,29 @@ public class CharacterFrame : MonoBehaviour
     public void Setup()
     {
         _rectTransform = GetComponent<RectTransform>();
+        _defaultPosition = Vector2.zero;
+        SetupFrameSize();
+
         _charName.text = _character.Name;
         _portraitImage.sprite = _character.Portrait;
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
-        _defaultPosition = Vector2.zero;
     }
 
     public void Setup(Character character)
     {
         _character = character;
         Setup();
+    }
+
+    private void SetupFrameSize()
+    {
+        RectTransform parentRectTransform = GetComponentInParent<RectTransform>();
+        FrameParamData frameParamData = CharacterFrameParamsSingleton.GetFrameSize(_character.CharacterSize);
+
+        parentRectTransform.sizeDelta = frameParamData.MainFrameParams;
+        _portraitImage.GetComponent<RectTransform>().sizeDelta = frameParamData.PortraitFrameParams;
+
+        //TODO
     }
     #endregion
 
