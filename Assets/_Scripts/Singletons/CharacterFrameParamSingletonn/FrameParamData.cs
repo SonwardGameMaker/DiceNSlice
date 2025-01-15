@@ -6,11 +6,18 @@ using UnityEngine;
 [Serializable]
 public class FrameParamData
 {
-    [SerializeField] private Vector2 _mainFrameParams;
-    [SerializeField] private Vector2 _portraitFrameParams;
-    [SerializeField] private Vector2 _diceCellFrameParams;
+    #region fields
+    [Header("Main frame")]
+    [SerializeField] private int _height;
 
-    public Vector2 MainFrameParams { get => _mainFrameParams; }
-    public Vector2 PortraitFrameParams { get => _portraitFrameParams; }
-    public Vector2 DiceCellFrameParams { get => _diceCellFrameParams; }
+    [Header("Square Components")]
+    [SerializeField] private int _sideLength;
+    [SerializeField] private int _position;
+    #endregion
+
+    #region properties
+    public int MainFrameHeight { get => _height; }
+    public int SquareComponentsSide { get => _sideLength; }
+    public int SquareComponentsPadding { get => _position; }
+    #endregion
 }

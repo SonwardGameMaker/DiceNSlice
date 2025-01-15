@@ -229,6 +229,7 @@ MonoBehaviour:
   _character: {fileID: 0}
   _charName: {fileID: 2244463041020743911}
   _portraitImage: {fileID: 5756201221061447887}
+  _diceCellImage: {fileID: 5087151996817506963}
   _healthPointsLabel: {fileID: 54828146167606606}
 --- !u!1 &1583601041490304403
 GameObject:
@@ -1051,7 +1052,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1, y: -1}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6209396338132016615
 CanvasRenderer:

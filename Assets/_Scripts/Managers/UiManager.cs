@@ -29,6 +29,8 @@ public class UiManager : MonoBehaviour
     {
         if (_isSet) return;
 
+        CharacterFrameParamsSingleton.Instance.Setup();
+
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
         SetHeroes(heroes);
         SetEnemies(enemies);

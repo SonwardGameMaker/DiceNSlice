@@ -7,15 +7,10 @@ public class CharacterFrameParamsSingleton : MonoBehaviour
     #region fields
     private static CharacterFrameParamsSingleton _instance;
 
-    private static Dictionary<CharacterSize, FrameParamData> _charFrameParams;
+    private Dictionary<CharacterSize, FrameParamData> _charFrameParams;
 
     [Header("Params")]
-    [SerializeField] private static FrameParamData _sizeOneParam;
-    [SerializeField] private static FrameParamData _sizeTwoParam;
-    [SerializeField] private static FrameParamData _sizeThreeParam;
-    [SerializeField] private static FrameParamData _sizeFourParam;
-    [SerializeField] private static FrameParamData _sizeFiveParam;
-    [SerializeField] private static FrameParamData _sizeSixParam;
+    [SerializeField] private ParamsSO _initSO;
     #endregion
 
     #region init
@@ -31,17 +26,20 @@ public class CharacterFrameParamsSingleton : MonoBehaviour
             Destroy(gameObject);
     }
 
+    public void Setup()
+        => InitDictionary();
+
     private CharacterFrameParamsSingleton() { } // idk if this is needed, becouse it's Mono class
 
-    private static void InitDictionary()
+    private void InitDictionary()
     {
         _charFrameParams = new Dictionary<CharacterSize, FrameParamData>();
-        _charFrameParams.Add(CharacterSize.One, _sizeOneParam);
-        _charFrameParams.Add(CharacterSize.Two, _sizeTwoParam);
-        _charFrameParams.Add(CharacterSize.Three, _sizeThreeParam);
-        _charFrameParams.Add(CharacterSize.Four, _sizeFourParam);
-        _charFrameParams.Add(CharacterSize.Five, _sizeFiveParam);
-        _charFrameParams.Add(CharacterSize.Six, _sizeSixParam);
+        _charFrameParams.Add(CharacterSize.One, _initSO.SizeOneParam);
+        _charFrameParams.Add(CharacterSize.Two, _initSO.SizeTwoParam);
+        _charFrameParams.Add(CharacterSize.Three, _initSO.SizeThreeParam);
+        _charFrameParams.Add(CharacterSize.Four, _initSO.SizeFourParam);
+        _charFrameParams.Add(CharacterSize.Five, _initSO.SizeFiveParam);
+        _charFrameParams.Add(CharacterSize.Six, _initSO.SizeSixParam);
     }
     #endregion
 
@@ -58,7 +56,6 @@ public class CharacterFrameParamsSingleton : MonoBehaviour
                 {
                     GameObject characterParamSingleton = new GameObject(nameof(CharacterFrameParamsSingleton));
                     _instance = characterParamSingleton.AddComponent<CharacterFrameParamsSingleton>();
-                    InitDictionary();
 
                     DontDestroyOnLoad(characterParamSingleton);
                 }
@@ -70,7 +67,7 @@ public class CharacterFrameParamsSingleton : MonoBehaviour
     #endregion
 
     #region external interactions
-    public static FrameParamData GetFrameSize(CharacterSize size)
+    public FrameParamData GetFrameSize(CharacterSize size)
         => _charFrameParams.GetValueOrDefault(size);
     #endregion
 }

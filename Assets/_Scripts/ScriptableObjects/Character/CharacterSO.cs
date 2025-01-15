@@ -8,7 +8,7 @@ public class CharacterSO : ScriptableObject
     [SerializeField] private Sprite _portrait;
     [SerializeField] private int _maxHealth;
     [SerializeField] private int _currentHealth;
-    [SerializeField] private int _characterSize;
+    [SerializeField] private CharacterSize _characterSize;
 
     [Header("Dice Sides")]
     [SerializeField] private DiceSide _leftSide;
@@ -22,7 +22,7 @@ public class CharacterSO : ScriptableObject
     public Sprite Portrait => _portrait;
     public int MaxHealth => _maxHealth;
     public int CurrentHealth => _currentHealth;
-    public int CharacterSize => _characterSize;
+    public CharacterSize CharacterSize => _characterSize;
 
     public DiceSide LeftSide => _leftSide;
     public DiceSide MiddleSide => _middleSide;

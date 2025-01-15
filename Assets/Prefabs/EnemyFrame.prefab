@@ -1052,6 +1052,7 @@ MonoBehaviour:
   _character: {fileID: 0}
   _charName: {fileID: 2244463041020743911}
   _portraitImage: {fileID: 1848607692520771902}
+  _diceCellImage: {fileID: 5087151996817506963}
   _healthPointsLabel: {fileID: 54828146167606606}
 --- !u!222 &3117851884598983232
 CanvasRenderer:

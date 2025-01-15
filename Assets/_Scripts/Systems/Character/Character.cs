@@ -35,6 +35,7 @@ public class Character : MonoBehaviour
         _portrait = so.Portrait;
         _maxHealth = new ModVar(so.MaxHealth);
         _currentHealth = so.CurrentHealth;
+        _characterSize = so.CharacterSize;
 
         _dice = GetComponent<Dice>();
         _dice.Setup(this, so.GetDiceSides());
