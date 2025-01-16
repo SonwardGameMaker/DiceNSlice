@@ -17,13 +17,13 @@ public class CharacterManager : MonoBehaviour
 
     // heroes
     private List<Hero> _heroes;
-    private List<Hero> _activeHeroes;
     private List<Hero> _deadHeroes;
     // enemies
     private List<Enemy> _enemies;
-    private List<Enemy> _activeEnemies;
     private List<Enemy> _deadEnemies;
     private List<Enemy> _reinforcementsEnemies;
+
+    private bool _enemiesInTwoLines;
     #endregion
 
     #region events
@@ -42,17 +42,21 @@ public class CharacterManager : MonoBehaviour
 
         if (CalculateCharSizePool(enemies) <= MAX_POOL_CHARACTER_SIZE)
         {
-            _activeEnemies = enemies;
+            _enemies = enemies;
             _reinforcementsEnemies = new List<Enemy>();
         }
         else
         {
             (List<Enemy>, List<Enemy>) result = SplitIntoReinforcements(enemies);
-            _activeEnemies = result.Item1;
+            _enemies = result.Item1;
             _reinforcementsEnemies = result.Item2;
         }
 
     }
+    #endregion
+
+    #region properties
+    public bool EnemiesInTwoLines => _enemiesInTwoLines;
     #endregion
 
     #region exteral interactions
@@ -78,7 +82,42 @@ public class CharacterManager : MonoBehaviour
     public List<Enemy> CreateEnemies(List<EnemySO> enemies)
         => enemies.Select(h => CreateCharacter(h) as Enemy).ToList();
 
-    // TODO
+    public void AddEnemy(EnemySO so)
+    {
+        Enemy enemy = CreateCharacter(so) as Enemy;
+
+        if ((int)enemy.CharacterSize + CalculateCharSizePool(_enemies) <= MAX_POOL_CHARACTER_SIZE)
+        { 
+            _enemies.Add(enemy); 
+            CheckEnemiesLines();
+        }
+        else
+            _reinforcementsEnemies.Add(enemy);
+    }
+
+    public void CheckEnemiesLines()
+    {
+        if (_enemies == null || _enemies.Count == 0) return;
+
+        bool onBackline = _enemies[0].OnBackline;
+        foreach (Enemy enemy in _enemies)
+            if (enemy.OnBackline != onBackline)
+                _enemiesInTwoLines = true;
+            else 
+                _enemiesInTwoLines = false;
+    }
+    
+    public void HeroDies(Hero hero)
+    {
+
+    }
+
+    public void EnemyDies(Enemy enemy)
+    {
+        _deadEnemies.Add(enemy);
+        _enemies.Remove(enemy);
+        TryGetEnemyFromReinforcements();
+    }
     #endregion
 
     #region internal operations
@@ -124,9 +163,6 @@ public class CharacterManager : MonoBehaviour
 
     private int CalculateCharSizePool<T>(List<T> characters) where T : Character
         => characters.Sum(c => (int)c.CharacterSize);
-
-    private List<Character> CreateCharacters(List<CharacterSO> characters)
-        => characters.Select(character => CreateCharacter(character)).ToList();
 
     private Character CreateCharacter(CharacterSO so)
     {
@@ -187,13 +223,34 @@ public class CharacterManager : MonoBehaviour
             }
         }
 
+        if (character is Enemy)
+            CheckEnemiesLines();
+
         return false;
+    }
+
+    private bool TryGetEnemyFromReinforcements()
+    {
+        int currentPoolSize = CalculateCharSizePool(_enemies);
+
+        if (_reinforcementsEnemies == null || _reinforcementsEnemies.Count == 0) return false;
+
+        foreach (Enemy enemy in _reinforcementsEnemies)
+            if (currentPoolSize + (int)enemy.CharacterSize <= MAX_POOL_CHARACTER_SIZE)
+            {
+                _enemies.Add(enemy);
+                _reinforcementsEnemies.Remove(enemy);
+                currentPoolSize = CalculateCharSizePool(_enemies);
+            }
+
+        return true;
     }
     #endregion
 
     #region event hanlers
     private void OnCharacterChangedHandler(Character character)
     {
+        CheckEnemiesLines();
         OnCharacterChanged?.Invoke(character);
     }
     #endregion

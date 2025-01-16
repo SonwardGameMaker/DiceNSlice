@@ -147,13 +147,17 @@ public class UiManager : MonoBehaviour
             position = position
         };
 
-        //Debug.Log($"Position: {position.x}, {position.y}, {position.z}");
-
         List<RaycastResult> raycastResults = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, raycastResults);
 
         return raycastResults;
     }
+
+    public void DisableCharacter(Character character)
+        => GetCharacterFrame(character).enabled = false;
+
+    public void EnableCharacter(Character character)
+        => GetCharacterFrame(character).enabled = true;
     #endregion
 
     #region static methods
@@ -164,12 +168,7 @@ public class UiManager : MonoBehaviour
     #region internal operations
     private CharacterFrame GetCharacterFrame(Character character)
     {
-        VerticalLayoutGroup characterGroup;
-        if (character is Hero)
-            characterGroup = _heroes;
-        else
-            characterGroup = _enemies;
-
+        VerticalLayoutGroup characterGroup = character is Hero ? _heroes : _enemies;
 
         for (int i = 0; i < characterGroup.transform.childCount; i++)
         {

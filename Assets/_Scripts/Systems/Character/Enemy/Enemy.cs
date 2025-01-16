@@ -6,6 +6,7 @@ public class Enemy : Character
 {
     #region fields
     private List<EnemyPassive> _passives;
+    private bool _onBackline;
     #endregion
 
     #region init
@@ -22,10 +23,20 @@ public class Enemy : Character
         base.Setup(so);
 
         _passives = so.EnemyPassives;
+        _onBackline = so.OnBackline;
     }
     #endregion
 
     #region properties
     public List<EnemyPassive> Passives => _passives;
+    public bool OnBackline => _onBackline;
+    #endregion
+
+    #region external interactions
+    public void SetLine(bool onBackline)
+    {
+        _onBackline |= onBackline;
+        OnCharacterChanegtTrigger();
+    }
     #endregion
 }

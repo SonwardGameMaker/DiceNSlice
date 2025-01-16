@@ -146,8 +146,7 @@ public class TempGameManager : MonoBehaviour
 
         if (isOnUi)
         {
-            foreach (var hero in _characterManager.GetHeroes())
-                _uiManager.MoveCharacterBack(hero);
+            // TODO
         }
         else
         {
