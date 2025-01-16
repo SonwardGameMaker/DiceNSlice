@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Enemy : Character
 {
-    private List<EnemyPassive> _passieves;
+    #region fields
+    private List<EnemyPassive> _passives;
+    #endregion
 
     #region init
     public override void Setup(CharacterSO so)
     {
-        if (so is HeroSO)
-            Setup(so as HeroSO);
+        if (so is EnemySO)
+            Setup(so as EnemySO);
         else
             base.Setup(so);
     }
@@ -18,8 +20,12 @@ public class Enemy : Character
     public void Setup(EnemySO so)
     {
         base.Setup(so);
+
+        _passives = so.EnemyPassives;
     }
     #endregion
 
-    public List<EnemyPassive> Passives { get => _passieves; }
+    #region properties
+    public List<EnemyPassive> Passives => _passives;
+    #endregion
 }

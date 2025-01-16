@@ -6,9 +6,12 @@ using UnityEngine.UIElements;
 
 public abstract class DiceSide : GameActionContainer
 {
+    #region fields
     private List<Keyword> _addedKeywords;
     private List<Keyword> _currentKeywords;
+    #endregion
 
+    #region init
     public DiceSide(string name, Sprite sprite, int pips, List<Keyword> baseKeywords)
     {
         _name = name;
@@ -27,10 +30,14 @@ public abstract class DiceSide : GameActionContainer
         _addedKeywords = new List<Keyword>();
         ResetKeywords();
     }
+    #endregion
 
-    public List<Keyword> AddedKeywords { get => _addedKeywords; }
-    public List<Keyword> CurentKeywords { get => _currentKeywords; }
+    #region properties
+    public List<Keyword> AddedKeywords => _addedKeywords;
+    public List<Keyword> CurentKeywords => _currentKeywords;
+    #endregion
 
+    #region external interactions
     public void AddKeyword(Keyword keyword)
     {
         throw new NotImplementedException();
@@ -43,4 +50,5 @@ public abstract class DiceSide : GameActionContainer
 
     public void ResetKeywords()
         => _currentKeywords = new List<Keyword>(_baseKeywords);
+    #endregion
 }

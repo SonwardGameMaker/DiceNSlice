@@ -59,15 +59,15 @@ public class Character : MonoBehaviour
     #endregion
 
     #region properties
-    public string Name { get => _name; }
-    public Sprite Portrait { get => _portrait; }
+    public string Name => _name;
+    public Sprite Portrait => _portrait;
     public int MaxHealth { get => _maxHealth.CurrentValue; }
     public int MaxHealthBaseValue { get => _maxHealth.BaseValue; set => SetMaxHp(value); }
     public int CurrentHealth { get => _currentHealth; set => SetHp(value); }
-    public CharacterSize CharacterSize { get => _characterSize; }
+    public CharacterSize CharacterSize => _characterSize;
     public int Shields { get => _shields; set => SetShields(value); }
-    public StatusEffectSystem StatusEffectManager { get => StatusEffectManager; }
-    public Dice Dice { get => _dice; }
+    public StatusEffectSystem StatusEffectManager => StatusEffectManager;
+    public Dice Dice => _dice;
     #endregion
 
     #region external interactions

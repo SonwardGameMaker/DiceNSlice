@@ -5,5 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "ScriptableObects/CharacterData/EnemySO")]
 public class EnemySO : CharacterSO
 {
-    public EnemyPassive EnemyPassive;
+    [SerializeField] private List<EnemyPassive> _enemyPassives;
+
+    public List<EnemyPassive> EnemyPassives => _enemyPassives;
 }

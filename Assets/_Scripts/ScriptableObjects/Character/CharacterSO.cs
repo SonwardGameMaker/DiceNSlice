@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterSO : ScriptableObject
 {
+    #region fields
     [SerializeField] private string _name;
     [SerializeField] private Sprite _portrait;
     [SerializeField] private int _maxHealth;
@@ -17,7 +18,9 @@ public class CharacterSO : ScriptableObject
     [SerializeField] private DiceSide _bottomSide;
     [SerializeField] private DiceSide _rightSide;
     [SerializeField] private DiceSide _rightmostSide;
+    #endregion
 
+    #region properties
     public string Name => _name;
     public Sprite Portrait => _portrait;
     public int MaxHealth => _maxHealth;
@@ -30,7 +33,9 @@ public class CharacterSO : ScriptableObject
     public DiceSide BottomSide => _bottomSide;
     public DiceSide RightSide => _rightSide;
     public DiceSide RightmostSide => _rightmostSide;
+    #endregion
 
+    #region external interactions
     public DiceSide[] GetDiceSides()
     {
         DiceSide[] result = new DiceSide[6];
@@ -43,4 +48,5 @@ public class CharacterSO : ScriptableObject
 
         return result;
     }
+    #endregion
 }

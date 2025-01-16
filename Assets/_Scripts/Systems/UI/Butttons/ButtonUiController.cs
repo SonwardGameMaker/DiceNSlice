@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class ButtonUiController : MonoBehaviour
 {
+    #region fields
     [SerializeField] private RerollButton _rerollButton;
     [SerializeField] private UndoRollButton _undoRollButton;
     [SerializeField] private NextButton _nextButton;
+    #endregion
 
-    public RerollButton RerollButton { get => _rerollButton; }
-    public UndoRollButton UndoRollButton { get => _undoRollButton; }
-    public NextButton NextButton { get => _nextButton; }
+    #region properties
+    public RerollButton RerollButton => _rerollButton;
+    public UndoRollButton UndoRollButton => _undoRollButton;
+    public NextButton NextButton => _nextButton;
+    #endregion
 }

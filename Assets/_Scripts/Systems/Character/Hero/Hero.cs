@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Hero : Character
 {
+    #region fields
     [SerializeField] private HeroClass _heroClass;
+
     private int _heroLevel;
     private Item _item1;
     private Item _item2;
+    #endregion
 
     #region init
     public override void Setup(CharacterSO so)
@@ -35,10 +38,12 @@ public class Hero : Character
     public Item Item2 { get => _item2; set => SetItem(value, ref _item2); }
     #endregion
 
+    #region internal operations
     private void SetItem(Item item, ref Item slot)
     {
         slot = item;
 
         // TODO
     }
+    #endregion
 }

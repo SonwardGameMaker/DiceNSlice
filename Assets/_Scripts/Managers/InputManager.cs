@@ -23,38 +23,6 @@ public class InputManager : MonoBehaviour
     public event Action OnNextTurnClicked;
     #endregion
 
-    #region MonoBehaviour methods
-    private void Awake()
-    {
-        _playerInput = new PlayerInput();
-       
-    }
-
-    private void OnEnable()
-    {
-        _interact = _playerInput.UI.ActionInteract;
-        _info = _playerInput.UI.InfoInteract;
-
-        _playerInput.Enable();
-        _interact.Enable();
-        _info.Enable();
-
-        _interact.performed += OnInteractTriggered;
-        _info.performed += OnInfoTriggered;
-    }
-
-    private void OnDisable()
-    {
-        _interact.performed -= OnInteractTriggered;
-        _info.performed -= OnInfoTriggered;
-
-        _interact.Disable();
-        _info.Disable();
-
-        _playerInput.Disable();
-    }
-    #endregion
-
     #region external interactions
     public void RerollButtonPressed()
     {
@@ -86,5 +54,37 @@ public class InputManager : MonoBehaviour
 
     private void OnInfoTriggered(InputAction.CallbackContext context)
         => OnInfoClicked?.Invoke(Input.mousePosition); // this may not work correctly on tpuchscreen
+    #endregion
+
+    #region MonoBehaviour methods
+    private void Awake()
+    {
+        _playerInput = new PlayerInput();
+
+    }
+
+    private void OnEnable()
+    {
+        _interact = _playerInput.UI.ActionInteract;
+        _info = _playerInput.UI.InfoInteract;
+
+        _playerInput.Enable();
+        _interact.Enable();
+        _info.Enable();
+
+        _interact.performed += OnInteractTriggered;
+        _info.performed += OnInfoTriggered;
+    }
+
+    private void OnDisable()
+    {
+        _interact.performed -= OnInteractTriggered;
+        _info.performed -= OnInfoTriggered;
+
+        _interact.Disable();
+        _info.Disable();
+
+        _playerInput.Disable();
+    }
     #endregion
 }

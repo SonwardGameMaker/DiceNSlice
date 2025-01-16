@@ -16,8 +16,8 @@ public class FrameParamData
     #endregion
 
     #region properties
-    public int MainFrameHeight { get => _height; }
-    public int SquareComponentsSide { get => _sideLength; }
-    public int SquareComponentsPadding { get => _position; }
+    public int MainFrameHeight => _height;
+    public int SquareComponentsSide => _sideLength;
+    public int SquareComponentsPadding => _position;
     #endregion
 }
