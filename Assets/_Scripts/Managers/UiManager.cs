@@ -25,15 +25,28 @@ public class UiManager : MonoBehaviour
     #endregion
 
     #region init
+    public void Setup()
+    {
+        if (_isSet) return;
+
+        Init();
+    }
+
     public void Setup(List<Hero> heroes, List<Enemy> enemies)
     {
         if (_isSet) return;
 
+        Init();
+
+        SetHeroes(heroes);
+        SetEnemies(enemies);
+    }
+
+    private void Init()
+    {
         CharacterFrameParamsSingleton.Instance.Setup();
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
-        SetHeroes(heroes);
-        SetEnemies(enemies);
     }
     #endregion
 

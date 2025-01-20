@@ -6,11 +6,9 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    private const int MAX_POOL_CHARACTER_SIZE = 10;
+    private const int MaxPoolEnemySize = 10;
 
     #region fields
-    [SerializeField] private UiManager _uiManager;
-
     [Header("Containers")]
     [SerializeField] private Transform _heroContainer;
     [SerializeField] private Transform _enemyContainer;
@@ -24,6 +22,7 @@ public class CharacterManager : MonoBehaviour
     private List<Enemy> _reinforcementsEnemies;
 
     private bool _enemiesInTwoLines;
+    private int _currentPoolEnemySize;
     #endregion
 
     #region events
@@ -33,6 +32,19 @@ public class CharacterManager : MonoBehaviour
     #endregion
 
     #region init
+    public void Setup()
+    {
+        _heroes = new List<Hero>();
+        _deadHeroes = new List<Hero>();
+
+        _enemies = new List<Enemy>();
+        _deadEnemies = new List<Enemy>();
+        _reinforcementsEnemies = new List<Enemy>();
+
+        _enemiesInTwoLines = false;
+        _currentPoolEnemySize = 0;
+    }
+
     public void Setup(List<HeroSO> heroes, List<EnemySO> enemies)
         => Setup(CreateHeroes(heroes), CreateEnemies(enemies));
 
@@ -40,7 +52,7 @@ public class CharacterManager : MonoBehaviour
     {
         _heroes = heroes;
 
-        if (CalculateCharSizePool(enemies) <= MAX_POOL_CHARACTER_SIZE)
+        if (CalculateCharSizePool(enemies) <= MaxPoolEnemySize)
         {
             _enemies = enemies;
             _reinforcementsEnemies = new List<Enemy>();
@@ -86,7 +98,7 @@ public class CharacterManager : MonoBehaviour
     {
         Enemy enemy = CreateCharacter(so) as Enemy;
 
-        if ((int)enemy.CharacterSize + CalculateCharSizePool(_enemies) <= MAX_POOL_CHARACTER_SIZE)
+        if ((int)enemy.CharacterSize + CalculateCharSizePool(_enemies) <= MaxPoolEnemySize)
         { 
             _enemies.Add(enemy); 
             CheckEnemiesLines();
@@ -133,7 +145,7 @@ public class CharacterManager : MonoBehaviour
 
         int activeSizePull = 0;
         int count = 0;
-        while (activeSizePull <= MAX_POOL_CHARACTER_SIZE)
+        while (activeSizePull <= MaxPoolEnemySize)
         {
             AddToActive();
             count++;
@@ -142,9 +154,9 @@ public class CharacterManager : MonoBehaviour
         for (int i = count; i < enemies.Count; i++)
             reinforcementsEnemy.Add(enemies[i]);
 
-        while (activeSizePull <= MAX_POOL_CHARACTER_SIZE && count < enemies.Count)
+        while (activeSizePull <= MaxPoolEnemySize && count < enemies.Count)
         {
-            if (activeSizePull + (int)enemies[count].CharacterSize <= MAX_POOL_CHARACTER_SIZE)
+            if (activeSizePull + (int)enemies[count].CharacterSize <= MaxPoolEnemySize)
             {
                 AddToActive();
             }    
@@ -236,7 +248,7 @@ public class CharacterManager : MonoBehaviour
         if (_reinforcementsEnemies == null || _reinforcementsEnemies.Count == 0) return false;
 
         foreach (Enemy enemy in _reinforcementsEnemies)
-            if (currentPoolSize + (int)enemy.CharacterSize <= MAX_POOL_CHARACTER_SIZE)
+            if (currentPoolSize + (int)enemy.CharacterSize <= MaxPoolEnemySize)
             {
                 _enemies.Add(enemy);
                 _reinforcementsEnemies.Remove(enemy);

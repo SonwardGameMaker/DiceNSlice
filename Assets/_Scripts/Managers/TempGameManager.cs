@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TempGameManager : MonoBehaviour
+public class TempGameManager : GameManagerBase
 {
     #region fields
     [SerializeField] private CharacterManager _characterManager;
@@ -41,41 +41,43 @@ public class TempGameManager : MonoBehaviour
     }
 
     // Character Manager
-    private void CharacterManagerSubscribe()
+    protected override void CharacterManagerSubscribe()
     {
         _characterManager.OnCharacterCreated += OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted += OnCharacterRemovedHandler;
+        _characterManager.OnCharacterChanged += OnCharacterChangedHandler;
     }
-    private void CharacterManagerUnsubscribe()
+    protected override void CharacterManagerUnsubscribe()
     {
         _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted -= OnCharacterRemovedHandler;
+        _characterManager.OnCharacterChanged -= OnCharacterChangedHandler;
     }
 
     // Combat Manager
-    private void CombatManagerSubscription()
+    protected override void CombatManagerSubscription()
     {
         _combatManager.OnHeroActivated += OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
     }
-    private void CombatManagerUnsubscription()
+    protected override void CombatManagerUnsubscription()
     {
         _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
     }
 
     // UI Manager
-    private void UiManagerSubscription()
+    protected override void UiManagerSubscription()
     {
 
     }
-    private void UimanagerUnsubscription()
+    protected override void UimanagerUnsubscription()
     {
 
     }
 
     // Input Manager
-    private void InputManagerSubscription()
+    protected override void InputManagerSubscription()
     {
         _inputManager.OnInteractClicked += OnInteractionClickedHandler;
         _inputManager.OnInfoClicked += OnInfoClickedHandler;
@@ -86,7 +88,7 @@ public class TempGameManager : MonoBehaviour
         _inputManager.OnDoneRerollingClicked += OnDoneRerollingClickedHandler;
         _inputManager.OnNextTurnClicked += OnNextTurnClickedHandler;
     }
-    private void InputManagerUnsubscription()
+    protected override void InputManagerUnsubscription()
     {
         _inputManager.OnInteractClicked -= OnInteractionClickedHandler;
         _inputManager.OnInfoClicked -= OnInfoClickedHandler;
@@ -105,6 +107,11 @@ public class TempGameManager : MonoBehaviour
 
     private void OnCharacterRemovedHandler(Character character)
         => _uiManager.RemoveCharacter(character);
+
+    private void OnCharacterChangedHandler(Character character)
+    {
+        // TODO
+    }
     #endregion
 
     #region Combat Manager event handlers
@@ -120,11 +127,7 @@ public class TempGameManager : MonoBehaviour
     #endregion
 
     #region UI Manager event handlers
-    private void OnCharacterClickedHandler(Character character)
-    {
-        // Temp debug realization, TODO
-        _uiManager.MoveCharacterForvard(character);
-    }
+
     #endregion
 
     #region Input Manager handlers
