@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class CharacterManagerTestManager
+public class CharacterManagerTests
 {
     [UnityTest]
     public IEnumerator CharacterManagerTestManagerWithEnumeratorPasses()
