@@ -32,6 +32,32 @@ public class CharacterManager : MonoBehaviour
     #endregion
 
     #region init
+    // Setup for testing classes
+    public void TestSetup(Transform heroContainer, Transform enemyContainer)
+    {
+        _heroContainer = heroContainer;
+        _enemyContainer = enemyContainer;
+
+        Setup();
+    }
+
+    public void TestSetup(Transform heroContainer, Transform enemyContainer, List<HeroSO> heroes, List<EnemySO> enemies)
+    {
+        _heroContainer = heroContainer;
+        _enemyContainer = enemyContainer;
+
+        Setup(heroes, enemies);
+    }
+
+    public void TestSetup(Transform heroContainer, Transform enemyContainer, List<Hero> heroes, List<Enemy> enemies)
+    {
+        _heroContainer = heroContainer;
+        _enemyContainer = enemyContainer;
+
+        Setup(heroes, enemies);
+    }
+
+    // Standart setup
     public void Setup()
     {
         _heroes = new List<Hero>();
