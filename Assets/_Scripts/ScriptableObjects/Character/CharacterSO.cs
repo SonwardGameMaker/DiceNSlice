@@ -5,19 +5,31 @@ using UnityEngine;
 public class CharacterSO : ScriptableObject
 {
     #region fields
-    [SerializeField] private string _name;
-    [SerializeField] private Sprite _portrait;
-    [SerializeField] private int _maxHealth;
-    [SerializeField] private int _currentHealth;
-    [SerializeField] private CharacterSize _characterSize;
+    [SerializeField] protected string _name;
+    [SerializeField] protected Sprite _portrait;
+    [SerializeField] protected int _maxHealth;
+    [SerializeField] protected int _currentHealth;
+    [SerializeField] protected CharacterSize _characterSize;
 
     [Header("Dice Sides")]
-    [SerializeField] private DiceSide _leftSide;
-    [SerializeField] private DiceSide _middleSide;
-    [SerializeField] private DiceSide _topSide;
-    [SerializeField] private DiceSide _bottomSide;
-    [SerializeField] private DiceSide _rightSide;
-    [SerializeField] private DiceSide _rightmostSide;
+    [SerializeField] protected DiceSide _leftSide;
+    [SerializeField] protected DiceSide _middleSide;
+    [SerializeField] protected DiceSide _topSide;
+    [SerializeField] protected DiceSide _bottomSide;
+    [SerializeField] protected DiceSide _rightSide;
+    [SerializeField] protected DiceSide _rightmostSide;
+    #endregion
+
+    #region init
+    public CharacterSO() { }
+    public CharacterSO(string name, Sprite portrait, int maxHealth, int currentHealth, CharacterSize characterSize)
+    {
+        _name = name;
+        _portrait = portrait;
+        _maxHealth = maxHealth;
+        _currentHealth = currentHealth;
+        _characterSize = characterSize;
+    }
     #endregion
 
     #region properties

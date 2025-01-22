@@ -6,10 +6,23 @@ using UnityEngine;
 public class HeroSO : CharacterSO
 {
     #region fields
-    [SerializeField] Item _item1;
-    [SerializeField] Item _item2;
-    [SerializeField] HeroClass _heroClass;
-    [SerializeField] int _heroLevel;
+    [SerializeField] protected Item _item1;
+    [SerializeField] protected Item _item2;
+    [SerializeField] protected HeroClass _heroClass;
+    [SerializeField] protected int _heroLevel;
+    #endregion
+
+    #region init
+    public HeroSO() : base() { }
+
+    public HeroSO(string name, Sprite portrait, int maxHealth, int currentHealth, CharacterSize characterSize, Item item1, Item item2, HeroClass heroClass, int heroLevel)
+        : base(name, portrait, maxHealth, currentHealth, characterSize)
+    {
+        _item1 = item1;
+        _item2 = item2;
+        _heroClass = heroClass;
+        _heroLevel = heroLevel;
+    }
     #endregion
 
     #region properties

@@ -77,23 +77,32 @@ public class CharacterManager : MonoBehaviour
     public void Setup(List<HeroSO> heroes, List<EnemySO> enemies)
         => Setup(CreateHeroes(heroes), CreateEnemies(enemies));
 
-    public void Setup(List<Hero> heroes, List<Enemy> enemies)
+    private void Setup(List<Hero> heroes, List<Enemy> enemies)
     {
-        _heroes = heroes;
+        if (heroes == null)
+            heroes = new List<Hero>();
+        else
+            _heroes = heroes;
 
         _currentPoolEnemySize = 0;
-        if (CalculateCharSizePool(enemies) <= MaxPoolEnemySize)
-        {
-            _enemies = enemies;
-            _reinforcementEnemies = new List<Enemy>();
-        }
+        if (enemies == null)
+            enemies = new List<Enemy>();
         else
         {
-            (List<Enemy>, List<Enemy>) result = SplitIntoReinforcements(enemies);
-            _enemies = result.Item1;
-            _reinforcementEnemies = result.Item2;
+            if (CalculateCharSizePool(enemies) <= MaxPoolEnemySize)
+            {
+                _enemies = enemies;
+                _reinforcementEnemies = new List<Enemy>();
+            }
+            else
+            {
+                (List<Enemy>, List<Enemy>) result = SplitIntoReinforcements(enemies);
+                _enemies = result.Item1;
+                _reinforcementEnemies = result.Item2;
+            }
+            RefreshEnemiesData();
         }
-        RefreshEnemiesData();
+        
     }
     #endregion
 
@@ -288,6 +297,8 @@ public class CharacterManager : MonoBehaviour
     #region internal operations heroes
     private List<Hero> CreateHeroes(List<HeroSO> heroes)
     {
+        if (heroes == null) return null;
+
         List<Hero> result = heroes.Select(h => CreateHero(h)).ToList();
         result = result.OrderBy(h => (int)h.HeroClass).ToList();
         return result;
@@ -299,7 +310,11 @@ public class CharacterManager : MonoBehaviour
 
     #region internal operations enemies
     public List<Enemy> CreateEnemies(List<EnemySO> enemies)
-        => enemies.Select(h => CreateEnemy(h)).ToList();
+    {
+        if (enemies == null) return null;
+
+        return enemies.Select(h => CreateEnemy(h)).ToList();
+    }
 
     public Enemy CreateEnemy(EnemySO so)
         => (Enemy)CreateCharacter<Enemy>(so, _enemyContainer, "_Enemy");
