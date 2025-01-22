@@ -22,7 +22,7 @@ public class TempGameManager : GameManagerBase
     {
         _characterManager.Setup(_initSO.Heroes, _initSO.Enemies);
         _combatManager.Setup();
-        _uiManager.Setup(_characterManager.GetHeroes(), _characterManager.GetEnemies());
+        _uiManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
 
         // Event Subscription
         CharacterManagerSubscribe();
