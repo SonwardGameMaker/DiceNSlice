@@ -198,22 +198,6 @@ public class CharacterManager : MonoBehaviour
         OnCharacterChangeList?.Invoke(enemy);
     }
 
-    public bool TryGetEnemyFromReinforcements()
-    {
-        if (_reinforcementEnemies == null || _reinforcementEnemies.Count == 0) return false;
-
-        foreach (Enemy enemy in _reinforcementEnemies)
-            if (_currentPoolEnemySize + (int)enemy.CharacterSize <= MaxPoolEnemySize)
-            {
-                _enemies.Add(enemy);
-                _reinforcementEnemies.Remove(enemy);
-                RefreshEnemiesData();
-                OnCharacterChangeList?.Invoke(enemy);
-            }
-
-        return true;
-    }
-
     public void MoveEnemyToReinforcements(Enemy enemy, List<Enemy> enemyList = null)
     {
         if (enemyList == null) enemyList = _enemies;
@@ -357,6 +341,22 @@ public class CharacterManager : MonoBehaviour
             activeEnemies.Add(enemies[count]);
             activeSizePull += (int)enemies[count].CharacterSize;
         }
+    }
+
+    private bool TryGetEnemyFromReinforcements()
+    {
+        if (_reinforcementEnemies == null || _reinforcementEnemies.Count == 0) return false;
+
+        foreach (Enemy enemy in _reinforcementEnemies)
+            if (_currentPoolEnemySize + (int)enemy.CharacterSize <= MaxPoolEnemySize)
+            {
+                _enemies.Add(enemy);
+                _reinforcementEnemies.Remove(enemy);
+                RefreshEnemiesData();
+                OnCharacterChangeList?.Invoke(enemy);
+            }
+
+        return true;
     }
 
     private void CheckEnemiesLines()

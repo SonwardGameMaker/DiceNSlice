@@ -20,18 +20,6 @@ public class CharacterSO : ScriptableObject
     [SerializeField] protected DiceSide _rightmostSide;
     #endregion
 
-    #region init
-    public CharacterSO() { }
-    public CharacterSO(string name, Sprite portrait, int maxHealth, int currentHealth, CharacterSize characterSize)
-    {
-        _name = name;
-        _portrait = portrait;
-        _maxHealth = maxHealth;
-        _currentHealth = currentHealth;
-        _characterSize = characterSize;
-    }
-    #endregion
-
     #region properties
     public string Name => _name;
     public Sprite Portrait => _portrait;
