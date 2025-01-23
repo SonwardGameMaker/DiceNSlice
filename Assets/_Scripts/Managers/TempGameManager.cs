@@ -57,13 +57,13 @@ public class TempGameManager : GameManagerBase
     // Combat Manager
     protected override void CombatManagerSubscription()
     {
-        _combatManager.OnHeroActivated += OnHeroActivatedHandler;
-        _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+        //_combatManager.OnHeroActivated += OnHeroActivatedHandler;
+        //_combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
     }
     protected override void CombatManagerUnsubscription()
     {
-        _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
-        _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
+        //_combatManager.OnHeroActivated -= OnHeroActivatedHandler;
+        //_combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
     }
 
     // UI Manager
