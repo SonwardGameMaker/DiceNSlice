@@ -16,6 +16,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private VerticalLayoutGroup _heroes;
     [SerializeField] private VerticalLayoutGroup _enemies;
     [SerializeField] private ButtonUiController _buttons;
+    // debug
+    [SerializeField] private TurnsDisplay _turnsDisplay;
 
     [Header("Other")]
     [SerializeField] int _deltaMoveCoef;
@@ -45,6 +47,8 @@ public class UiManager : MonoBehaviour
     private void Init()
     {
         CharacterFrameParamsSingleton.Instance.Setup();
+
+        _turnsDisplay.Setup();
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
     }

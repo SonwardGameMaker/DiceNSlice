@@ -7,41 +7,34 @@ public class IdleState : CombatState
 {
     #region fields
     private List<GameAction> _heroesActionOrder;
-
-    // temp
-    private Hero _activeHero;
-    #endregion
-
-    #region events
-    public event Action<Hero> OnHeroActivated;
-    public event Action<Hero> OnHeroDeactivated;
     #endregion
 
     public IdleState(CombatStateMachine stateMachine) : base(stateMachine)
     {
     }
 
-    #region properties
-    public Hero ActiveHero { get => _activeHero; }
-    #endregion
-
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Entering {nameof(IdleState)}");
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Exiting {nameof(IdleState)}");
     }
 
     #region external interactions
     public override void SelectCharacter(Character character)
     {
-        // TODO
+        if (character is Hero hero)
+        {
+            _stateMachine.GetState<AbilitActiveState>().TrySetActiveHero(hero);
+            _stateMachine.ChangeState<AbilitActiveState>();
+        }
+            
     }
 
-    public override void NextState()
+    public override void Next()
     {
         _stateMachine.ChangeState<EnemyTurnState>();
     }

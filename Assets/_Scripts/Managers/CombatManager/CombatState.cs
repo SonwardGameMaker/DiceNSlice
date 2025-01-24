@@ -22,6 +22,6 @@ public abstract class CombatState
 
     #region external interactions
     public abstract void SelectCharacter(Character character);
-    public abstract void NextState();
+    public abstract void Next();
     #endregion
 }

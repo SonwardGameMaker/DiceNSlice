@@ -10,12 +10,13 @@ public class RollingSate : CombatState
 
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Entering {nameof(RollingSate)}");
+        Next();
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Exiting {nameof(RollingSate)}");
     }
 
     #region external interactions
@@ -24,7 +25,7 @@ public class RollingSate : CombatState
         // TODO
     }
 
-    public override void NextState()
+    public override void Next()
     {
         _stateMachine.ChangeState<IdleState>();
     }

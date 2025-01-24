@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour
     public event Action OnRerollClicked;
     public event Action OnCancelRerollClicked;
     public event Action OnDoneRerollingClicked;
-    public event Action OnNextTurnClicked;
+    public event Action OnNextButtonClicked;
     #endregion
 
     #region external interactions
@@ -44,7 +44,7 @@ public class InputManager : MonoBehaviour
         //      OnNextTurnClicked?.Invoke();
 
         // Temp realization:
-        OnNextTurnClicked?.Invoke();
+        OnNextButtonClicked?.Invoke();
     }
     #endregion
 

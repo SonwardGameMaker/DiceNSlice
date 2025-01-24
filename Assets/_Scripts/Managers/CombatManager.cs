@@ -6,54 +6,81 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    
+    CombatStateMachine _stateMachine;
+
+    #region events
+    public event Action OnTurnEnded;
+
+    public event Action<Hero> OnHeroActivated;
+    public event Action<Hero> OnHeroDeactivated;
+    #endregion
 
     #region init
     public void Setup()
     {
-        // TODO
-    }
-    #endregion
+        _stateMachine = new CombatStateMachine();
 
-    
+        _stateMachine.OnTurnEnded += OnTurnEndedHandler;
 
-    #region external interactions
-    public void SelectCharacter(Character character)
-    {
-        // temp
-        //Debug.Log($"{typeof(CharacterManager)} - {nameof(SelectCharacter)}");
-        if (character is Hero hero)
+        SubscribeToAbilityActiveState();
+
+        void SubscribeToAbilityActiveState()
         {
-            //ActivateHero(hero);
+            AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
+            if (abilitActiveState == null) throw new NullReferenceException(nameof(AbilitActiveState));
+
+            abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
+            abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
+
+
         }
     }
 
-    public void Cancel()
+    private void OnDestroy()
     {
+        UnsubscribeToAbilityActiveState();
 
-        // temp
-        //Debug.Log($"{typeof(CharacterManager)} - {nameof(Cancel)}");
-        //DeactivateHero();
+        _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
+
+        void UnsubscribeToAbilityActiveState()
+        {
+            AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
+
+            abilitActiveState.OnHeroActivated -= OnHeroActivated;
+            abilitActiveState.OnHeroDeactivated -= OnHeroDeactivated;
+        }
     }
     #endregion
 
-    #region internal operactions
-    //private void ActivateHero(Hero hero)
-    //{
-    //    if (_activeHero == null)
-    //    {
-    //        _activeHero = hero;
-    //        OnHeroActivated?.Invoke(hero);
-    //    }
-    //}
+    #region properties
+    public CombatStateMachine StateMachine => _stateMachine;
+    #endregion
 
-    //private void DeactivateHero()
-    //{
-    //    if (_activeHero != null)
-    //    {
-    //        OnHeroDeactivated?.Invoke(_activeHero);
-    //        _activeHero = null;
-    //    }
-    //}
+    #region external interactions
+    public void StartCombat()
+        => _stateMachine.Setup<PreparingState>();
+
+    public void SelectCharacter(Character character)
+        => _stateMachine.CurrentState.SelectCharacter(character);
+
+    public void Next()
+        => _stateMachine.CurrentState.Next();
+
+    public void Cancel()
+    {
+        if (_stateMachine.CurrentState is AbilitActiveState abilityActiveState)
+            abilityActiveState.Next();
+    }
+    #endregion
+
+    #region event handlers
+    private void OnTurnEndedHandler()
+        => OnTurnEnded?.Invoke();
+
+    private void OnHeroActivatedHandlder(Hero hero)
+        => OnHeroActivated?.Invoke(hero);
+
+    private void OnHeroDeactivatedHandlder(Hero hero)
+        => OnHeroDeactivated?.Invoke(hero);
     #endregion
 }

@@ -29,6 +29,8 @@ public class TempGameManager : GameManagerBase
         CombatManagerSubscription();
         UiManagerSubscription();
         InputManagerSubscription();
+
+        _combatManager.StartCombat();
     }
 
     private void OnDestroy()
@@ -57,13 +59,15 @@ public class TempGameManager : GameManagerBase
     // Combat Manager
     protected override void CombatManagerSubscription()
     {
-        //_combatManager.OnHeroActivated += OnHeroActivatedHandler;
-        //_combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+        if (_characterManager == null) throw new NullReferenceException(nameof(CombatManager));
+
+        _combatManager.OnHeroActivated += OnHeroActivatedHandler;
+        _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
     }
     protected override void CombatManagerUnsubscription()
     {
-        //_combatManager.OnHeroActivated -= OnHeroActivatedHandler;
-        //_combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
+        _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
+        _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
     }
 
     // UI Manager
@@ -86,7 +90,7 @@ public class TempGameManager : GameManagerBase
         _inputManager.OnRerollClicked += OnRerollClickedHandler;
         _inputManager.OnCancelRerollClicked += OnCancelRerollClickedHandler;
         _inputManager.OnDoneRerollingClicked += OnDoneRerollingClickedHandler;
-        _inputManager.OnNextTurnClicked += OnNextTurnClickedHandler;
+        _inputManager.OnNextButtonClicked += OnNextTurnClickedHandler;
     }
     protected override void InputManagerUnsubscription()
     {
@@ -97,7 +101,7 @@ public class TempGameManager : GameManagerBase
         _inputManager.OnRerollClicked -= OnRerollClickedHandler;
         _inputManager.OnCancelRerollClicked -= OnCancelRerollClickedHandler;
         _inputManager.OnDoneRerollingClicked -= OnDoneRerollingClickedHandler;
-        _inputManager.OnNextTurnClicked -= OnNextTurnClickedHandler;
+        _inputManager.OnNextButtonClicked -= OnNextTurnClickedHandler;
     }
     #endregion
 
@@ -186,6 +190,8 @@ public class TempGameManager : GameManagerBase
     {
         // TODO: Implement next turn clicked behavior
         Debug.Log("Next turn button clicked.");
+
+        _combatManager.Next();
     }
 
     #endregion

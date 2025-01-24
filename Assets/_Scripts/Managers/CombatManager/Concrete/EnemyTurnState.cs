@@ -10,12 +10,13 @@ public class EnemyTurnState : CombatState
 
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Entering {nameof(EnemyTurnState)}");
+        Next();
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Exiting {nameof(AbilitActiveState)}");
     }
 
     #region external interactions
@@ -24,9 +25,9 @@ public class EnemyTurnState : CombatState
         // TODO
     }
 
-    public override void NextState()
+    public override void Next()
     {
-        // TODO
+        _stateMachine.NextTurn();
     }
     #endregion
 }

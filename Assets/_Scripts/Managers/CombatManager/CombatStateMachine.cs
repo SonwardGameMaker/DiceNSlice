@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +15,16 @@ public class CombatStateMachine
     private List<CombatState> _stateList;
     #endregion
 
+    #region events
+    public event Action OnTurnEnded;
+    #endregion
+
     #region init
     public CombatStateMachine()
     {
         _stateList = new List<CombatState>();
         _stateList.Add(new PreparingState(this));
+        _stateList.Add(new RollingSate(this));
         _stateList.Add(new IdleState(this));
         _stateList.Add(new AbilitActiveState(this));
         _stateList.Add(new EnemyTurnState(this));
@@ -36,6 +42,11 @@ public class CombatStateMachine
     }
     #endregion
 
+    #region properties
+    public int TurnCount => _turnCount;
+    public CombatState CurrentState => _currentState;
+    #endregion
+
     #region external interactions
     public void ChangeState<T>() where T : CombatState
     {
@@ -46,5 +57,12 @@ public class CombatStateMachine
 
     public T GetState<T>() where T : CombatState
         => _stateList.Find(s => s is T) as T;
+
+    public void NextTurn()
+    {
+        _turnCount++;
+        ChangeState<PreparingState>();
+        OnTurnEnded?.Invoke();
+    }
     #endregion
 }

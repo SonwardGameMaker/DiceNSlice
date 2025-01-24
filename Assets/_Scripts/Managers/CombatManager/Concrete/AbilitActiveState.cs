@@ -1,22 +1,42 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AbilitActiveState : CombatState
 {
+    #region fields
+    private Hero _activeHero;
+    #endregion
+
+    #region events
+    public event Action<Hero> OnHeroActivated;
+    public event Action<Hero> OnHeroDeactivated;
+    #endregion
+
+    #region init
     public AbilitActiveState(CombatStateMachine stateMachine) : base(stateMachine)
     {
     }
+    #endregion
 
+    #region properties
+    public Hero ActiveHero { get => _activeHero; }
+    #endregion
+
+    #region state controll
     public override void EnterState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Entering {nameof(AbilitActiveState)}");
+        ActivateHero();
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"Exiting {nameof(AbilitActiveState)}");
+        DeactivateHero();
     }
+    #endregion
 
     #region external interactions
     public override void SelectCharacter(Character character)
@@ -24,9 +44,40 @@ public class AbilitActiveState : CombatState
         // TODO
     }
 
-    public override void NextState()
+    public override void Next()
     {
         _stateMachine.ChangeState<IdleState>();
+    }
+
+    public bool TrySetActiveHero(Hero hero)
+    {
+        if (_activeHero == null)
+        { 
+            _activeHero = hero;
+            return true;
+        }
+        else if (_activeHero == hero) return true;
+        
+        return false;
+    }
+    #endregion
+
+    #region internal operactions
+    private void ActivateHero()
+    {
+        if (_activeHero != null)
+        {
+            OnHeroActivated?.Invoke(_activeHero);
+        }
+    }
+
+    private void DeactivateHero()
+    {
+        if (_activeHero != null)
+        {
+            OnHeroDeactivated?.Invoke(_activeHero);
+            _activeHero = null;
+        }
     }
     #endregion
 }
