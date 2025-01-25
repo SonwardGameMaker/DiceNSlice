@@ -28,7 +28,7 @@ public class IdleState : CombatState
     {
         if (character is Hero hero)
         {
-            _stateMachine.GetState<AbilitActiveState>().TrySetActiveHero(hero);
+            _stateMachine.GetState<AbilitActiveState>().SetActiveHero(hero);
             _stateMachine.ChangeState<AbilitActiveState>();
         }
             

@@ -49,16 +49,10 @@ public class AbilitActiveState : CombatState
         _stateMachine.ChangeState<IdleState>();
     }
 
-    public bool TrySetActiveHero(Hero hero)
+    public void SetActiveHero(Hero hero)
     {
-        if (_activeHero == null)
-        { 
+        if (_activeHero == null || _activeHero != hero)
             _activeHero = hero;
-            return true;
-        }
-        else if (_activeHero == hero) return true;
-        
-        return false;
     }
     #endregion
 

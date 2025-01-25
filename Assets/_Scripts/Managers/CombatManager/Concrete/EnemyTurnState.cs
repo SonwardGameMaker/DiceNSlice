@@ -16,7 +16,7 @@ public class EnemyTurnState : CombatState
 
     public override void ExitState()
     {
-        Debug.Log($"Exiting {nameof(AbilitActiveState)}");
+        Debug.Log($"Exiting {nameof(EnemyTurnState)}");
     }
 
     #region external interactions

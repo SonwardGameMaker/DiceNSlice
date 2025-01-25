@@ -217,8 +217,9 @@ public class CharacterManager : MonoBehaviour
         character.transform.SetParent(container.transform);
 
         T result = character.AddComponent<T>();
-        character.AddComponent<Dice>();
+        Dice dice = character.AddComponent<Dice>();
         result.Setup(so);
+        dice.Setup(result, so.GetDiceSides());
 
         OnCharacterCreated?.Invoke(result);
         result.OnCharacterChanged += OnCharacterChangedHandler;
