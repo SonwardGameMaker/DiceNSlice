@@ -20,6 +20,10 @@ namespace Documentation
         // events
         #endregion
 
+        #region delegates
+        // delegates
+        #endregion
+
         #region init
         // Setup(), Start(), etc.
 

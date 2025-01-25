@@ -87,6 +87,12 @@ public class UiManager : MonoBehaviour
         go.GetComponentInChildren<CharacterFrame>().Setup(character);
     }
 
+    public void UpdateCharacter(Character character)
+    {
+        CharacterFrame frame = GetCharacterFrame(character);
+        frame.UpdateData();
+    }
+
     public bool RemoveCharacter(Character character)
     {
         var frame = GetCharacterFrame(character);

@@ -32,7 +32,13 @@ public abstract class GameAction
     #endregion
 
     #region external interactions
-    public abstract List<Character> GetValidTargets(List<Hero> heroes, List<Enemy> enemies);
+    /// <summary>
+    /// This method identifies valid targets for the 'UsingOn' method
+    /// </summary>
+    /// <param name="alies"> Takes alies for character that using this method </param>
+    /// <param name="enemies"> Takes enemies for character that using this method </param>
+    /// <returns> Valid targets for the 'UsingOn' method </returns>
+    public abstract List<Character> GetValidTargets(List<Hero> alies, List<Enemy> enemies);
 
     public abstract void UseOn(List<Character> characters);
 

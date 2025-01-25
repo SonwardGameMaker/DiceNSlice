@@ -113,9 +113,7 @@ public class TempGameManager : GameManagerBase
         => _uiManager.RemoveCharacter(character);
 
     private void OnCharacterChangedHandler(Character character)
-    {
-        // TODO
-    }
+        => _uiManager.UpdateCharacter(character);
     #endregion
 
     #region Combat Manager event handlers
