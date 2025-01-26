@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class TempGameManager : GameManagerBase
 {
@@ -61,11 +62,17 @@ public class TempGameManager : GameManagerBase
     {
         if (_characterManager == null) throw new NullReferenceException(nameof(CombatManager));
 
+        _combatManager.OnPreparingStateStarts += OnPreparingStateStartsHandler;
+        _combatManager.OnPreparingStateStarts += OnRollingStateStartsHandler;
+
         _combatManager.OnHeroActivated += OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
     }
     protected override void CombatManagerUnsubscription()
     {
+        _combatManager.OnPreparingStateStarts -= OnPreparingStateStartsHandler;
+        _combatManager.OnPreparingStateStarts -= OnRollingStateStartsHandler;
+
         _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
     }
@@ -117,6 +124,24 @@ public class TempGameManager : GameManagerBase
     #endregion
 
     #region Combat Manager event handlers
+    private void OnPreparingStateStartsHandler()
+    {
+        foreach (Enemy enemy in _characterManager.Enemies)
+        {
+            enemy.Dice.RollTheDice();
+            _uiManager.UpdateCharacter(enemy);
+        }
+    }
+
+    private void OnRollingStateStartsHandler()
+    {
+        foreach (Hero hero in _characterManager.Heroes)
+        {       
+            hero.Dice.RollTheDice();
+            _uiManager.UpdateCharacter(hero);
+        }
+    }
+
     private void OnHeroActivatedHandler(Hero hero)
     {
         _uiManager.MoveCharacterForvard(hero);

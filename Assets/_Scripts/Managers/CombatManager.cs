@@ -9,10 +9,16 @@ public class CombatManager : MonoBehaviour
     CombatStateMachine _stateMachine;
 
     #region events
-    public event Action OnTurnEnded;
+    // States
+    public event Action OnPreparingStateStarts;
+    public event Action OnRollingStateStarts;
 
+    // Characters
     public event Action<Hero> OnHeroActivated;
     public event Action<Hero> OnHeroDeactivated;
+
+    // Combat flow
+    public event Action OnTurnEnded;
     #endregion
 
     #region init
@@ -22,7 +28,23 @@ public class CombatManager : MonoBehaviour
 
         _stateMachine.OnTurnEnded += OnTurnEndedHandler;
 
+        SubscribeToPreparingState();
+        SubscribeToRollingState();
         SubscribeToAbilityActiveState();
+
+        void SubscribeToPreparingState()
+        {
+            PreparingState preparingState = _stateMachine.GetState<PreparingState>();
+
+            preparingState.OnStateStarts += OnPreparingStateStartsHandler;
+        }
+
+        void SubscribeToRollingState()
+        {
+            RollingSate rollingState = _stateMachine.GetState<RollingSate>();
+
+            rollingState.OnStateStarts += OnRollingStateStartsHandler;
+        }
 
         void SubscribeToAbilityActiveState()
         {
@@ -31,16 +53,31 @@ public class CombatManager : MonoBehaviour
 
             abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
             abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
-
-
         }
+
     }
 
     private void OnDestroy()
     {
+        UnsubscribeToPreparingState();
+        UnsubscribeToRollingState();
         UnsubscribeToAbilityActiveState();
 
         _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
+
+        void UnsubscribeToPreparingState()
+        {
+            PreparingState preparingState = _stateMachine.GetState<PreparingState>();
+
+            preparingState.OnStateStarts -= OnPreparingStateStartsHandler;
+        }
+
+        void UnsubscribeToRollingState()
+        {
+            RollingSate rollingState = _stateMachine.GetState<RollingSate>();
+
+            rollingState.OnStateStarts -= OnRollingStateStartsHandler;
+        }
 
         void UnsubscribeToAbilityActiveState()
         {
@@ -74,6 +111,13 @@ public class CombatManager : MonoBehaviour
     #endregion
 
     #region event handlers
+    // States
+    private void OnPreparingStateStartsHandler()
+        => OnPreparingStateStarts?.Invoke();
+
+    private void OnRollingStateStartsHandler()
+        => OnRollingStateStarts?.Invoke();
+
     private void OnTurnEndedHandler()
         => OnTurnEnded?.Invoke();
 

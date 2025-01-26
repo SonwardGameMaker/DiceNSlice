@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class DiceSide : GameActionContainer
+[Serializable]
+public class DiceSide : GameActionContainer
 {
     #region fields
     private List<Keyword> _addedKeywords;
@@ -12,20 +13,16 @@ public abstract class DiceSide : GameActionContainer
     #endregion
 
     #region init
-    public DiceSide(string name, Sprite sprite, int pips, List<Keyword> baseKeywords)
+    public DiceSide(string name, Sprite sprite, GameAction gameAction, List<Keyword> baseKeywords)
+        : base(name, sprite, gameAction)
     {
-        _name = name;
-        _sprite = sprite;
-        _pips = new ModVar(pips);
         _baseKeywords = baseKeywords;
         _addedKeywords = new List<Keyword>();
         ResetKeywords();
     }
-    public DiceSide(string name, Sprite sprite, int pips)
+    public DiceSide(string name, Sprite sprite, GameAction gameAction)
+        : base(name, sprite, gameAction)
     {
-        _name = name;
-        _sprite = sprite;
-        _pips = new ModVar(pips);
         _baseKeywords = new List<Keyword>();
         _addedKeywords = new List<Keyword>();
         ResetKeywords();

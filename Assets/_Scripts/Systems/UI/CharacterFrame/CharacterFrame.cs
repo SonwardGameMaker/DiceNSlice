@@ -9,16 +9,18 @@ using UnityEngine.UIElements;
 public class CharacterFrame : MonoBehaviour
 {
     #region fields
-    [SerializeField] private Character _character;
-
     [SerializeField] private TMP_Text _charName;
     [SerializeField] private UnityEngine.UI.Image _portraitImage;
     [SerializeField] private UnityEngine.UI.Image _diceCellImage;
     [SerializeField] private HealthPointsLabel _healthPointsLabel;
     [SerializeField] private UnityEngine.UI.Image _shieldsImage;
     [SerializeField] private TMP_Text _shieldCount;
+    [SerializeField] private UnityEngine.UI.Image _rolledDiceSide;
+    [SerializeField] private TMP_Text _pipsCount;
 
-    RectTransform _rectTransform;
+    private Character _character;
+
+    private RectTransform _rectTransform;
     private Vector2 _defaultPosition;
     private bool _isMoved;
     #endregion
@@ -90,6 +92,18 @@ public class CharacterFrame : MonoBehaviour
         _portraitImage.sprite = _character.Portrait;
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
         SetShields(_character.Shields);
+        SetRolledDice();
+    }
+
+    public void SetRolledDice()
+    {
+        if (_character.Dice.RolledSide == null) 
+            return;
+
+        _rolledDiceSide.sprite = _character.Dice.RolledSide.Sprite;
+        _pipsCount.text = _character.Dice.RolledSide.CurrentPips.ToString();
+
+        // TODO: make it normal
     }
     #endregion
 

@@ -17,5 +17,6 @@ MonoBehaviour:
   _maxHealth: 5
   _currentHealth: 5
   _characterSize: 2
+  _dice: {fileID: 11400000, guid: 776b8850664d6504a9d84167fb2b3189, type: 2}
   _heroClass: 0
   _heroLevel: 1

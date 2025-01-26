@@ -7,7 +7,7 @@ using UnityEngine;
 public class PreparingState : CombatState
 {
     #region events
-    public event Action OnStateStarts; // TODO: add trigger for coroutines in DiceManager
+    public event Action OnStateStarts;
     #endregion
 
     #region init
@@ -19,11 +19,9 @@ public class PreparingState : CombatState
     #region state controll
     public override void EnterState()
     {
-        // OnStateStarts?.Invoke(); // TODO uncomment when dice manager will be ready
+        OnStateStarts?.Invoke();
 
-        // temp
         Debug.Log($"Entering {nameof(PreparingState)}");
-        Next();
     }
 
     public override void ExitState()

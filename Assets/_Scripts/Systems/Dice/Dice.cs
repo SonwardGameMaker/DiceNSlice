@@ -15,16 +15,18 @@ public class Dice : MonoBehaviour
     #endregion
 
     #region init
-    public void Setup(Character owner, DiceSide[] side = null)
+    public void Setup(Character owner, List<DiceSide> sides = null)
     {
         _owner = owner;
 
-        if (side == null || side.Length > 6)
+        if (sides == null || sides.Count > 6)
         {
             Debug.LogError("Sides is not set properly");
             _sides = new DiceSide[6];
         }
         
+        _sides = sides.ToArray();
+
         _rolledSide = null;
         _isLocked = false;
     }

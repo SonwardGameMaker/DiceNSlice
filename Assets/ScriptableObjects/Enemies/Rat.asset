@@ -17,3 +17,5 @@ MonoBehaviour:
   _maxHealth: 3
   _currentHealth: 3
   _characterSize: 1
+  _dice: {fileID: 11400000, guid: 535894e5cef9841419950466826a3c6d, type: 2}
+  _onBackline: 0
