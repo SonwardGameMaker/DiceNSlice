@@ -70,7 +70,7 @@ public class CharacterFrame : MonoBehaviour
     {
         if (_isMoved)
         {
-            Debug.LogError("Character cannot move becouse he is already moved");
+            Debug.LogError("Character cannot move because he is already moved");
             return;
         }
 

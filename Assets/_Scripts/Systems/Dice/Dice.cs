@@ -18,6 +18,7 @@ public class Dice : MonoBehaviour
     public void Setup(Character owner, List<DiceSide> sides = null)
     {
         _owner = owner;
+        _rand = new System.Random();
 
         if (sides == null || sides.Count > 6)
         {

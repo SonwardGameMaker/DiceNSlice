@@ -88,10 +88,7 @@ public class UiManager : MonoBehaviour
     }
 
     public void UpdateCharacter(Character character)
-    {
-        CharacterFrame frame = GetCharacterFrame(character);
-        frame.UpdateData();
-    }
+        => GetCharacterFrame(character).UpdateData();
 
     public bool RemoveCharacter(Character character)
     {

@@ -15,9 +15,9 @@ public class RollingSate : CombatState
 
     public override void EnterState()
     {
-        OnStateStarts?.Invoke();
-
         Debug.Log($"Entering {nameof(RollingSate)}");
+
+        OnStateStarts?.Invoke();
     }
 
     public override void ExitState()

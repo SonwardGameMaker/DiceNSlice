@@ -126,20 +126,24 @@ public class TempGameManager : GameManagerBase
     #region Combat Manager event handlers
     private void OnPreparingStateStartsHandler()
     {
+        // Temp realization, TODO with DiceManager
         foreach (Enemy enemy in _characterManager.Enemies)
         {
             enemy.Dice.RollTheDice();
             _uiManager.UpdateCharacter(enemy);
         }
+        _combatManager.Next();
     }
 
     private void OnRollingStateStartsHandler()
     {
+        // Temp realization, TODO with DiceManager
         foreach (Hero hero in _characterManager.Heroes)
         {       
             hero.Dice.RollTheDice();
             _uiManager.UpdateCharacter(hero);
         }
+        _combatManager.Next();
     }
 
     private void OnHeroActivatedHandler(Hero hero)

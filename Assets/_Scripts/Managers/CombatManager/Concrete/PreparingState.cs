@@ -19,9 +19,9 @@ public class PreparingState : CombatState
     #region state controll
     public override void EnterState()
     {
-        OnStateStarts?.Invoke();
-
         Debug.Log($"Entering {nameof(PreparingState)}");
+
+        OnStateStarts?.Invoke();
     }
 
     public override void ExitState()
