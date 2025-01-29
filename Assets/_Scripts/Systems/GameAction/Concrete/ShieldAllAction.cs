@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class ShieldAllAction : GameAction, IAllTargetsAction
+public class ShieldAllAction : GameAction, IConstTargetsAction
 {
     public ShieldAllAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
@@ -17,13 +17,5 @@ public class ShieldAllAction : GameAction, IAllTargetsAction
 
         foreach (Character character in characters)
             character.ChangeShields(pips);
-    }
-
-    public void UndoUsing(List<Character> characters, int pips)
-    {
-        if (characters == null || characters.Count == 0) return;
-
-        foreach (Character character in characters)
-            character.ChangeShields(-pips);
     }
 }

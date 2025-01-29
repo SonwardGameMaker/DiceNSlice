@@ -36,7 +36,7 @@ public class Enemy : Character
     public void SetLine(bool onBackline)
     {
         _onBackline |= onBackline;
-        OnCharacterChanegtTrigger();
+        OnCharacterChangedTrigger();
     }
     #endregion
 }

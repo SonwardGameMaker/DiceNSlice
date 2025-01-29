@@ -49,12 +49,18 @@ public class TempGameManager : GameManagerBase
         _characterManager.OnCharacterCreated += OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted += OnCharacterRemovedHandler;
         _characterManager.OnCharacterChanged += OnCharacterChangedHandler;
+
+        _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+        _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
     }
     protected override void CharacterManagerUnsubscribe()
     {
         _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted -= OnCharacterRemovedHandler;
         _characterManager.OnCharacterChanged -= OnCharacterChangedHandler;
+
+        _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+        _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
     }
 
     // Combat Manager
@@ -121,6 +127,12 @@ public class TempGameManager : GameManagerBase
 
     private void OnCharacterChangedHandler(Character character)
         => _uiManager.UpdateCharacter(character);
+
+    private void OnCharacterEnterSceneHandler(Character character)
+        => _uiManager.EnableCharacter(character);
+
+    private void OnCharacterLeaveScene(Character character)
+        => _uiManager.DisableCharacter(character);
     #endregion
 
     #region Combat Manager event handlers
@@ -130,7 +142,7 @@ public class TempGameManager : GameManagerBase
         foreach (Enemy enemy in _characterManager.Enemies)
         {
             enemy.Dice.RollTheDice();
-            _uiManager.UpdateCharacter(enemy);
+            _uiManager.GetCharacterFrame(enemy).SetRolledDice();
         }
         _combatManager.Next();
     }
@@ -141,13 +153,20 @@ public class TempGameManager : GameManagerBase
         foreach (Hero hero in _characterManager.Heroes)
         {       
             hero.Dice.RollTheDice();
-            _uiManager.UpdateCharacter(hero);
+            _uiManager.GetCharacterFrame(hero).SetRolledDice();
         }
         _combatManager.Next();
     }
 
     private void OnHeroActivatedHandler(Hero hero)
     {
+        if (_combatManager.StateMachine.CurrentState is AbilitActiveState abilityActiveState)
+        {
+            Dice dice = hero.GetComponent<Dice>();
+            abilityActiveState.SetActiveHero(hero, dice, dice.LockedSide.GameAction.GetValidTargets
+                (_characterManager.Heroes.Select(h => h as Character).ToList(), _characterManager.Enemies.Select(e => e as Character).ToList()));
+        }
+
         _uiManager.MoveCharacterForvard(hero);
     }
 

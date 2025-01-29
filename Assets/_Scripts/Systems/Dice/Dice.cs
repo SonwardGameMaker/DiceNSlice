@@ -36,7 +36,7 @@ public class Dice : MonoBehaviour
     #region properties
     public Character Owner { get => _owner; }
     public DiceSide[] Sides { get => _sides; }
-    public DiceSide RolledSide { get => _rolledSide; }
+    public DiceSide LockedSide { get => _rolledSide; }
     public bool IsLocked { get => _isLocked; }
     #endregion
 

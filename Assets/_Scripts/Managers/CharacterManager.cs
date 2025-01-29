@@ -31,7 +31,8 @@ public class CharacterManager : MonoBehaviour
     public event Action<Character> OnCharacterCreated;
     public event Action<Character> OnCharacterDeleted;
     public event Action<Character> OnCharacterChanged;
-    public event Action<Character> OnCharacterChangeList;
+    public event Action<Character> OnCharacterEnterScene;
+    public event Action<Character> OnCharacterLeaveScene;
     #endregion
 
     #region init
@@ -84,6 +85,8 @@ public class CharacterManager : MonoBehaviour
         else
             _heroes = heroes;
 
+        _deadHeroes = new List<Hero>();
+
         _currentPoolEnemySize = 0;
         if (enemies == null)
             enemies = new List<Enemy>();
@@ -93,6 +96,9 @@ public class CharacterManager : MonoBehaviour
             {
                 _enemies = enemies;
                 _reinforcementEnemies = new List<Enemy>();
+
+                // Tests
+                _enemies[0].ChangeShields(2);
             }
             else
             {
@@ -102,7 +108,7 @@ public class CharacterManager : MonoBehaviour
             }
             RefreshEnemiesData();
         }
-        
+        _deadEnemies = new List<Enemy>();
     }
     #endregion
 
@@ -150,7 +156,7 @@ public class CharacterManager : MonoBehaviour
     {
         _deadHeroes.Add(hero);
         _heroes.Remove(hero);
-        OnCharacterChangeList?.Invoke(hero);
+        OnCharacterLeaveScene?.Invoke(hero);
     }    
     #endregion
 
@@ -195,7 +201,7 @@ public class CharacterManager : MonoBehaviour
 
         RefreshEnemiesData();
         TryGetEnemyFromReinforcements();
-        OnCharacterChangeList?.Invoke(enemy);
+        OnCharacterLeaveScene?.Invoke(enemy);
     }
 
     public void MoveEnemyToReinforcements(Enemy enemy, List<Enemy> enemyList = null)
@@ -206,7 +212,7 @@ public class CharacterManager : MonoBehaviour
         _reinforcementEnemies.Add(enemy);
         enemyList.Remove(enemy);
         RefreshEnemiesData();
-        OnCharacterChangeList?.Invoke(enemy);
+        OnCharacterLeaveScene?.Invoke(enemy);
     }
     #endregion
 
@@ -241,7 +247,6 @@ public class CharacterManager : MonoBehaviour
         return result;
     }
 
-
     private bool DeleteCharacter(Character character, Transform container)
     {
         if (container == null || character == null)
@@ -260,6 +265,18 @@ public class CharacterManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void CharacterDies<T>(T charatcer, List<T> aliveCharatcers, List<T> deadCharacters) where T : Character
+    {
+        deadCharacters.Add(charatcer);
+        aliveCharatcers.Remove(charatcer);
+    }
+
+    private void CharacterUndies<T>(T charatcer, List<T> aliveCharatcers, List<T> deadCharacters) where T : Character
+    {
+        aliveCharatcers.Add(charatcer);
+        deadCharacters.Remove(charatcer);
     }
 
     private void ClearUpList<T>(List<T> list) where T : Character
@@ -354,7 +371,7 @@ public class CharacterManager : MonoBehaviour
                 _enemies.Add(enemy);
                 _reinforcementEnemies.Remove(enemy);
                 RefreshEnemiesData();
-                OnCharacterChangeList?.Invoke(enemy);
+                OnCharacterEnterScene?.Invoke(enemy);
             }
 
         return true;
@@ -391,7 +408,16 @@ public class CharacterManager : MonoBehaviour
     private void OnCharacterChangedHandler(Character character)
     {
         CheckEnemiesLines();
-        OnCharacterChanged?.Invoke(character);
+
+        if (character.CurrentHealth > 0)
+            OnCharacterChanged?.Invoke(character);
+        else
+        {
+            if (character is Hero)
+                HeroDies(character as Hero);
+            else
+                EnemyDies(character as Enemy);
+        }
     }
     #endregion
 }

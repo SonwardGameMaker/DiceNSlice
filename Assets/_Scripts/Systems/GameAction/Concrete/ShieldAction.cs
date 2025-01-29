@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class ShieldAction : GameAction, ISingleTargetAction
+public class ShieldAction : GameAction, IChooseTargetAction
 {
     public ShieldAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
@@ -16,12 +16,5 @@ public class ShieldAction : GameAction, ISingleTargetAction
         if (character == null) return;
 
         character.ChangeShields(pips);
-    }
-
-    public void UndoUsing(Character character, int pips)
-    {
-        if (character == null) return;
-
-        character.ChangeShields(-pips);
     }
 }

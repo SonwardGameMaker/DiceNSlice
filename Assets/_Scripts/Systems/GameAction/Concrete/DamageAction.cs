@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DamageAction : GameAction, ISingleTargetAction
+public class DamageAction : GameAction, IChooseTargetAction
 {
     public DamageAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
@@ -17,13 +17,6 @@ public class DamageAction : GameAction, ISingleTargetAction
     {
         if (character == null) return;
 
-        character.ChangeHp(-pips);
-    }
-
-    public void UndoUsing(Character character, int pips)
-    {
-        if (character == null) return;
-
-        character.ChangeHp(pips);
+        character.TakeDamage(pips);
     }
 }

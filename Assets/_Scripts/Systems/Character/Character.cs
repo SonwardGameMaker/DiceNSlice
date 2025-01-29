@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     [SerializeField] protected ModVar _maxHealth;
     [SerializeField] protected int _currentHealth;
     [SerializeField] protected CharacterSize _characterSize;
-    protected int _shields;
+    [SerializeField] protected int _shields;
     protected StatusEffectSystem _statusEffectSystem;
     protected Dice _dice;
     #endregion
@@ -49,12 +49,12 @@ public class Character : MonoBehaviour
 
         _statusEffectSystem = GetComponent<StatusEffectSystem>();
 
-        _maxHealth.OnValueChanged += OnCharacterChanegtTrigger;
+        _maxHealth.OnValueChanged += OnCharacterChangedTrigger;
     }
 
     private void OnDestroy()
     {
-        _maxHealth.OnValueChanged -= OnCharacterChanegtTrigger;
+        _maxHealth.OnValueChanged -= OnCharacterChangedTrigger;
     }
     #endregion
 
@@ -71,21 +71,18 @@ public class Character : MonoBehaviour
     #endregion
 
     #region external interactions
-    public void ChangeHp(int amount)
+    public void TakeDamage(int damage)
     {
-        if (_currentHealth + amount > MaxHealth) _currentHealth = MaxHealth;
-        else _currentHealth += amount;
-
-        OnCharacterChanegtTrigger();
+        damage = ApplyDamageTo(ref _shields, damage);
+        ApplyDamageTo(ref _currentHealth, damage);
+        OnCharacterChangedTrigger();
     }
+
+    public void ChangeHp(int amount)
+        => SetValue(ref _currentHealth, Math.Min(MaxHealth, _currentHealth + amount));
 
     public void ChangeShields(int amount)
-    {
-        if (_shields + amount < 0) _shields = 0;
-        else _shields += amount;
-
-        OnCharacterChanegtTrigger();
-    }
+        => SetValue(ref _shields, Math.Max(0, _shields + amount));
 
     public void AddHpModifier(Modifier modifier)
         => _maxHealth.AddModifier(modifier);
@@ -95,7 +92,7 @@ public class Character : MonoBehaviour
 
     public virtual void ResetCharacter()
     {
-        // Reset Status Effects
+        // TODO: Reset Status Effects
         
     }
     #endregion
@@ -106,31 +103,40 @@ public class Character : MonoBehaviour
         if (amount < 0) throw new Exception("Value canot be less then zero");
         _maxHealth.BaseValue = amount;
 
-        OnCharacterChanegtTrigger();
+        OnCharacterChangedTrigger();
     }
+
     protected void SetHp(int amount)
     {
         if (amount > _maxHealth.CurrentValue) throw new Exception("Current Health cannot be bigger than Max Health");
         SetValue(ref _currentHealth, amount);
-
-        OnCharacterChanegtTrigger();
     }
+
     protected void SetShields(int amount)
     {
-        SetValue(ref _shields, amount);
-
-        OnCharacterChanegtTrigger();
+        if (amount < 0) throw new Exception("Value canot be less then zero");
+        SetValue(ref _shields, Math.Max(0, amount));
     }
 
     protected void SetValue(ref int target,  int value)
     {
-        if (value < 0) throw new Exception("Value canot be less then zero");
         target = value;
+        OnCharacterChangedTrigger();
+    }
+
+    private int ApplyDamageTo(ref int target, int damage)
+    {
+        if (target <= 0) return damage;
+
+        int absorbedDamage = Mathf.Min(target, damage);
+        target -= absorbedDamage;
+
+        return damage - absorbedDamage;
     }
     #endregion
 
     #region event triggers
-    protected void OnCharacterChanegtTrigger()
+    protected void OnCharacterChangedTrigger()
         => OnCharacterChanged?.Invoke(this);
     #endregion
 }

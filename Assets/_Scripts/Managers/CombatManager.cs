@@ -30,6 +30,7 @@ public class CombatManager : MonoBehaviour
 
         SubscribeToPreparingState();
         SubscribeToRollingState();
+        SubscribeToIdleState();
         SubscribeToAbilityActiveState();
 
         void SubscribeToPreparingState()
@@ -46,12 +47,19 @@ public class CombatManager : MonoBehaviour
             rollingState.OnStateStarts += OnRollingStateStartsHandler;
         }
 
+        void SubscribeToIdleState()
+        {
+            IdleState idleState = _stateMachine.GetState<IdleState>();
+
+            idleState.OnHeroActivated += OnHeroActivatedHandlder;
+        }
+
         void SubscribeToAbilityActiveState()
         {
             AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
             if (abilitActiveState == null) throw new NullReferenceException(nameof(AbilitActiveState));
 
-            abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
+            //abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
             abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
         }
 
@@ -61,6 +69,7 @@ public class CombatManager : MonoBehaviour
     {
         UnsubscribeToPreparingState();
         UnsubscribeToRollingState();
+        UnsubscribeToIdleState();
         UnsubscribeToAbilityActiveState();
 
         _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
@@ -79,11 +88,18 @@ public class CombatManager : MonoBehaviour
             rollingState.OnStateStarts -= OnRollingStateStartsHandler;
         }
 
+        void UnsubscribeToIdleState()
+        {
+            IdleState idleState = _stateMachine.GetState<IdleState>();
+
+            idleState.OnHeroActivated -= OnHeroActivatedHandlder;
+        }
+
         void UnsubscribeToAbilityActiveState()
         {
             AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
 
-            abilitActiveState.OnHeroActivated -= OnHeroActivated;
+            //abilitActiveState.OnHeroActivated -= OnHeroActivated;
             abilitActiveState.OnHeroDeactivated -= OnHeroDeactivated;
         }
     }

@@ -92,16 +92,15 @@ public class CharacterFrame : MonoBehaviour
         _portraitImage.sprite = _character.Portrait;
         _healthPointsLabel.Setup(_character.MaxHealth, _character.CurrentHealth);
         SetShields(_character.Shields);
-        SetRolledDice();
     }
 
     public void SetRolledDice()
     {
-        if (_character.Dice.RolledSide == null) 
+        if (_character.Dice.LockedSide == null) 
             return;
 
-        _rolledDiceSide.sprite = _character.Dice.RolledSide.Sprite;
-        _pipsCount.text = _character.Dice.RolledSide.CurrentPips.ToString();
+        _rolledDiceSide.sprite = _character.Dice.LockedSide.Sprite;
+        _pipsCount.text = _character.Dice.LockedSide.CurrentPips.ToString();
 
         // TODO: make it normal
     }
@@ -112,9 +111,11 @@ public class CharacterFrame : MonoBehaviour
     {
         if (amount > 0)
         {
-            _shieldsImage.enabled = true;
+            _shieldsImage.gameObject.SetActive(true);
             _shieldCount.text = amount.ToString();
         }
+        else
+            _shieldsImage.gameObject.SetActive(false);
     }
     #endregion
 }

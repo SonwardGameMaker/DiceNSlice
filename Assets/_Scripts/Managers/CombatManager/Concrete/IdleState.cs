@@ -9,6 +9,10 @@ public class IdleState : CombatState
     private List<GameAction> _heroesActionOrder;
     #endregion
 
+    #region events
+    public event Action<Hero> OnHeroActivated;
+    #endregion
+
     public IdleState(CombatStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -28,10 +32,9 @@ public class IdleState : CombatState
     {
         if (character is Hero hero)
         {
-            _stateMachine.GetState<AbilitActiveState>().SetActiveHero(hero);
             _stateMachine.ChangeState<AbilitActiveState>();
-        }
-            
+            OnHeroActivated?.Invoke(hero);
+        }       
     }
 
     public override void Next()

@@ -7,10 +7,12 @@ public class AbilitActiveState : CombatState
 {
     #region fields
     private Hero _activeHero;
+    private Dice _activeHeroDice;
+    private List<Character> _validTargets;
     #endregion
 
     #region events
-    public event Action<Hero> OnHeroActivated;
+    public event Action<string> OnWrongActionPerformed;
     public event Action<Hero> OnHeroDeactivated;
     #endregion
 
@@ -28,7 +30,7 @@ public class AbilitActiveState : CombatState
     public override void EnterState()
     {
         Debug.Log($"Entering {nameof(AbilitActiveState)}");
-        ActivateHero();
+        //ActivateHero();
     }
 
     public override void ExitState()
@@ -41,7 +43,21 @@ public class AbilitActiveState : CombatState
     #region external interactions
     public override void SelectCharacter(Character character)
     {
-        // TODO
+        if (_activeHero != null && _activeHeroDice != null && _validTargets != null && _validTargets.Count != 0)
+        {
+            if (!_validTargets.Contains(character))
+            {
+                OnWrongActionPerformed?.Invoke("Target is not valid");
+                return;
+            }
+
+            if (_activeHeroDice.LockedSide.GameAction is IChooseTargetAction singleTargetAction)
+            {
+                singleTargetAction.UseOn(character, _activeHeroDice.LockedSide.CurrentPips);
+                Next();
+            }
+            else throw new Exception("Ѕро, тут того немаЇ бути. “ут клуб лише дл€ с≥нгл");
+        }
     }
 
     public override void Next()
@@ -49,22 +65,22 @@ public class AbilitActiveState : CombatState
         _stateMachine.ChangeState<IdleState>();
     }
 
-    public void SetActiveHero(Hero hero)
+    public void SetActiveHero(Hero hero, Dice dice, List<Character> validTargets)
     {
         if (_activeHero == null || _activeHero != hero)
             _activeHero = hero;
+
+        if (_activeHeroDice == null || _activeHeroDice != dice)
+            _activeHeroDice = dice;
+
+        if (_validTargets == null || _validTargets != validTargets)
+            _validTargets = validTargets;
+
+        //ActivateHero();
     }
     #endregion
 
     #region internal operactions
-    private void ActivateHero()
-    {
-        if (_activeHero != null)
-        {
-            OnHeroActivated?.Invoke(_activeHero);
-        }
-    }
-
     private void DeactivateHero()
     {
         if (_activeHero != null)

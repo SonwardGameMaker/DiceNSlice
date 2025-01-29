@@ -174,19 +174,12 @@ public class UiManager : MonoBehaviour
     }
 
     public void DisableCharacter(Character character)
-        => GetCharacterFrame(character).enabled = false;
+        => GetCharacterFrame(character).gameObject.SetActive(false);
 
     public void EnableCharacter(Character character)
-        => GetCharacterFrame(character).enabled = true;
-    #endregion
+        => GetCharacterFrame(character).gameObject.SetActive(true);
 
-    #region static methods
-    public static Vector3 ToWorldPosition(Vector3 position)
-        => Camera.main.WorldToScreenPoint(position);
-    #endregion
-
-    #region internal operations
-    private CharacterFrame GetCharacterFrame(Character character)
+    public CharacterFrame GetCharacterFrame(Character character)
     {
         VerticalLayoutGroup characterGroup = character is Hero ? _heroes : _enemies;
 
@@ -201,5 +194,10 @@ public class UiManager : MonoBehaviour
 
         return null;
     }
+    #endregion
+
+    #region static methods
+    public static Vector3 ToWorldPosition(Vector3 position)
+        => Camera.main.WorldToScreenPoint(position);
     #endregion
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealAction : GameAction, ISingleTargetAction
+public class HealAction : GameAction, IChooseTargetAction
 {
     public HealAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
@@ -18,12 +18,5 @@ public class HealAction : GameAction, ISingleTargetAction
         if (character == null) return;
 
         character.ChangeHp(pips);
-    }
-
-    public void UndoUsing(Character character, int pips)
-    {
-        if (character == null) return;
-
-        character.ChangeHp(-pips);
     }
 }
