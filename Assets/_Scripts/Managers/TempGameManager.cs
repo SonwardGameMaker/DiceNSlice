@@ -10,6 +10,7 @@ public class TempGameManager : GameManagerBase
 {
     #region fields
     [SerializeField] private CharacterManager _characterManager;
+    [SerializeField] private DiceManager _diceManager;
     [SerializeField] private CombatManager _combatManager;
     [SerializeField] private UiManager _uiManager;
     [SerializeField] private InputManager _inputManager;
@@ -22,11 +23,13 @@ public class TempGameManager : GameManagerBase
     private void Start()
     {
         _characterManager.Setup(_initSO.Heroes, _initSO.Enemies);
+        _diceManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
         _combatManager.Setup();
         _uiManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
 
         // Event Subscription
-        CharacterManagerSubscribe();
+        CharacterManagerSubscription();
+        DiceManagerSubscription();
         CombatManagerSubscription();
         UiManagerSubscription();
         InputManagerSubscription();
@@ -37,14 +40,15 @@ public class TempGameManager : GameManagerBase
     private void OnDestroy()
     {
         // Event Unsubscription
-        CharacterManagerUnsubscribe();
+        CharacterManagerUnsubscription();
+        DiceManagerUnubscription();
         CombatManagerUnsubscription();
         UimanagerUnsubscription();
         InputManagerUnsubscription();
     }
 
     // Character Manager
-    protected override void CharacterManagerSubscribe()
+    protected override void CharacterManagerSubscription()
     {
         _characterManager.OnCharacterCreated += OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted += OnCharacterRemovedHandler;
@@ -53,7 +57,7 @@ public class TempGameManager : GameManagerBase
         _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
         _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
     }
-    protected override void CharacterManagerUnsubscribe()
+    protected override void CharacterManagerUnsubscription()
     {
         _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
         _characterManager.OnCharacterDeleted -= OnCharacterRemovedHandler;
@@ -61,6 +65,16 @@ public class TempGameManager : GameManagerBase
 
         _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
         _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
+    }
+
+    // Dice Manager
+    protected void DiceManagerSubscription()
+    {
+        _diceManager.OnDiceChanged += OnDiceChangedHandler;
+    }
+    protected void DiceManagerUnubscription()
+    {
+        _diceManager.OnDiceChanged -= OnDiceChangedHandler;
     }
 
     // Combat Manager
@@ -73,6 +87,8 @@ public class TempGameManager : GameManagerBase
 
         _combatManager.OnHeroActivated += OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+
+        _combatManager.OnTurnEnded += OnTurnEndedHandler;
     }
     protected override void CombatManagerUnsubscription()
     {
@@ -129,32 +145,37 @@ public class TempGameManager : GameManagerBase
         => _uiManager.UpdateCharacter(character);
 
     private void OnCharacterEnterSceneHandler(Character character)
-        => _uiManager.EnableCharacter(character);
+    {
+        _diceManager.GetControllerByCharacter(character).Enabled = true;
+        _uiManager.EnableCharacter(character);
+    }
 
     private void OnCharacterLeaveScene(Character character)
-        => _uiManager.DisableCharacter(character);
+    {
+        _diceManager.GetControllerByCharacter(character).Enabled = false;
+        _uiManager.DisableCharacter(character);
+    }
+    #endregion
+
+    #region Dice Manager event handlers
+    protected void OnDiceChangedHandler(Dice dice)
+        => _uiManager.UpdateCharacterDice(dice.Owner);
     #endregion
 
     #region Combat Manager event handlers
     private void OnPreparingStateStartsHandler()
     {
-        // Temp realization, TODO with DiceManager
-        foreach (Enemy enemy in _characterManager.Enemies)
-        {
-            enemy.Dice.RollTheDice();
-            _uiManager.GetCharacterFrame(enemy).SetRolledDice();
-        }
+        _diceManager.RollEnemyDices();
         _combatManager.Next();
     }
 
     private void OnRollingStateStartsHandler()
     {
-        // Temp realization, TODO with DiceManager
-        foreach (Hero hero in _characterManager.Heroes)
-        {       
-            hero.Dice.RollTheDice();
-            _uiManager.GetCharacterFrame(hero).SetRolledDice();
-        }
+        _diceManager.RollHeroDices();
+        // Temp realization
+        foreach (DiceController heroDiceController in _diceManager.HeroDices)
+            heroDiceController.LockTheDice();
+
         _combatManager.Next();
     }
 
@@ -163,7 +184,7 @@ public class TempGameManager : GameManagerBase
         if (_combatManager.StateMachine.CurrentState is AbilitActiveState abilityActiveState)
         {
             Dice dice = hero.GetComponent<Dice>();
-            abilityActiveState.SetActiveHero(hero, dice, dice.LockedSide.GameAction.GetValidTargets
+            abilityActiveState.SetActiveHero(hero, dice, dice.RolledSide.GameAction.GetValidTargets
                 (_characterManager.Heroes.Select(h => h as Character).ToList(), _characterManager.Enemies.Select(e => e as Character).ToList()));
         }
 
@@ -173,6 +194,15 @@ public class TempGameManager : GameManagerBase
     private void OnHeroDeactivatedHandler(Hero hero)
     {
         _uiManager.MoveCharacterBack(hero);
+    }
+
+    private void OnTurnEndedHandler()
+    {
+        _characterManager.ResetHeroesShields();
+        _characterManager.ResetEnemiesShields();
+
+        _diceManager.EnableEnemyDices();
+        _diceManager.EnableHeroDices();
     }
     #endregion
 

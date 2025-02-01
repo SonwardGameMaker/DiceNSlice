@@ -95,6 +95,9 @@ public class Character : MonoBehaviour
         // TODO: Reset Status Effects
         
     }
+
+    public void ResetShields()
+        => SetShields(0);
     #endregion
 
     #region internal operations

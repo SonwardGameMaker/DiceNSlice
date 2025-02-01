@@ -157,7 +157,10 @@ public class CharacterManager : MonoBehaviour
         _deadHeroes.Add(hero);
         _heroes.Remove(hero);
         OnCharacterLeaveScene?.Invoke(hero);
-    }    
+    }
+
+    public void ResetHeroesShields()
+        => ResetShields(_heroes);
     #endregion
 
     #region exteral interactions enemies
@@ -214,6 +217,9 @@ public class CharacterManager : MonoBehaviour
         RefreshEnemiesData();
         OnCharacterLeaveScene?.Invoke(enemy);
     }
+
+    public void ResetEnemiesShields()
+        => ResetShields(_enemies);
     #endregion
 
     #region internal operations
@@ -294,6 +300,12 @@ public class CharacterManager : MonoBehaviour
 
     private int CalculateCharSizePool<T>(List<T> characters) where T : Character
         => characters.Sum(c => (int)c.CharacterSize);
+
+    private void ResetShields<T>(List<T> characters) where T : Character
+    {
+        foreach (T character in characters)
+            character.ResetShields();
+    }
     #endregion
 
     #region internal operations heroes

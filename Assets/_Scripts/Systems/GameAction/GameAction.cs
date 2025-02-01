@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public abstract class GameAction
@@ -9,6 +10,11 @@ public abstract class GameAction
     protected int _basePips;
 
     protected List<Character> _validTargets;
+    #endregion
+
+    #region events
+    public event Action OnActionChanged;
+    public abstract event Action OnActionUsed;
     #endregion
 
     #region init

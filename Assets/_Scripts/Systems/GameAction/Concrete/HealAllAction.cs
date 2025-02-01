@@ -1,9 +1,10 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class HealAllAction : GameAction, IConstTargetsAction
 {
+    public override event Action OnActionUsed;
+
     public HealAllAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
         _name = "HealAll";
@@ -19,5 +20,7 @@ public class HealAllAction : GameAction, IConstTargetsAction
 
         foreach (Character character in characters)
             character.ChangeHp(pips);
+
+        OnActionUsed?.Invoke();
     }
 }

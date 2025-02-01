@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
@@ -12,6 +13,10 @@ public class Dice : MonoBehaviour
     private bool _isLocked;
     
     private System.Random _rand;
+    #endregion
+
+    #region events
+    public event Action<Dice> OnDiceChanged;
     #endregion
 
     #region init
@@ -30,14 +35,31 @@ public class Dice : MonoBehaviour
 
         _rolledSide = null;
         _isLocked = false;
+
+        foreach (DiceSide side in _sides)
+            side.OnActionContainerChanged += OnInternalDataChangesHandler;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (DiceSide side in _sides)
+            side.OnActionContainerChanged -= OnInternalDataChangesHandler;
     }
     #endregion
 
     #region properties
-    public Character Owner { get => _owner; }
-    public DiceSide[] Sides { get => _sides; }
-    public DiceSide LockedSide { get => _rolledSide; }
-    public bool IsLocked { get => _isLocked; }
+    public Character Owner => _owner;
+    public DiceSide[] Sides => _sides;
+    public DiceSide RolledSide => _rolledSide;
+    public bool IsLocked 
+    {
+        get => _isLocked;
+        set 
+        {
+            _isLocked = value;
+            OnInternalDataChangesHandler();
+        } 
+    }
     #endregion
 
     #region external interactions
@@ -48,13 +70,29 @@ public class Dice : MonoBehaviour
         return rolledSide;
     }
 
-    public void LockTheDice() => _isLocked = true;
-
-    public void UnlockTheDice() => _isLocked = false;
-
-    public bool ValidateSides()
+    public bool SetRolledSide(DiceSide side)
     {
-        throw new NotImplementedException();
+        if (_sides.Contains(side))
+        {
+            _rolledSide = side;
+            return true;
+        }
+
+        return false;
     }
+
+    public bool SetLockedSide(DiceSide side)
+    {
+        bool result = SetRolledSide(side);
+        if (result)
+            IsLocked = true;
+
+        return result;
+    }
+    #endregion
+
+    #region event handlers
+    private void OnInternalDataChangesHandler()
+        => OnDiceChanged?.Invoke(this);
     #endregion
 }

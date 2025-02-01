@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 public class ShieldAction : GameAction, IChooseTargetAction
 {
+    public override event Action OnActionUsed;
+
     public ShieldAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
         _name = "Shield";
@@ -16,5 +19,7 @@ public class ShieldAction : GameAction, IChooseTargetAction
         if (character == null) return;
 
         character.ChangeShields(pips);
+
+        OnActionUsed?.Invoke();
     }
 }

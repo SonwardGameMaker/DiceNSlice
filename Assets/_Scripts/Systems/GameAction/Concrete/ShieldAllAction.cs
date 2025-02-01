@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 public class ShieldAllAction : GameAction, IConstTargetsAction
 {
+    public override event Action OnActionUsed;
+
     public ShieldAllAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
         _name = "ShieldAll";
@@ -17,5 +20,7 @@ public class ShieldAllAction : GameAction, IConstTargetsAction
 
         foreach (Character character in characters)
             character.ChangeShields(pips);
+
+        OnActionUsed?.Invoke();
     }
 }

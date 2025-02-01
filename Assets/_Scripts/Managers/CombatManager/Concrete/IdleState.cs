@@ -30,7 +30,7 @@ public class IdleState : CombatState
     #region external interactions
     public override void SelectCharacter(Character character)
     {
-        if (character is Hero hero)
+        if (character is Hero hero && hero.Dice.RolledSide.Enabled)
         {
             _stateMachine.ChangeState<AbilitActiveState>();
             OnHeroActivated?.Invoke(hero);

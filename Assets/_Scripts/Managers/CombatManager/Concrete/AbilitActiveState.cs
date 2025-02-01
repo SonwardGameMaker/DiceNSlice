@@ -51,9 +51,9 @@ public class AbilitActiveState : CombatState
                 return;
             }
 
-            if (_activeHeroDice.LockedSide.GameAction is IChooseTargetAction singleTargetAction)
+            if (_activeHeroDice.RolledSide.GameAction is IChooseTargetAction singleTargetAction)
             {
-                singleTargetAction.UseOn(character, _activeHeroDice.LockedSide.CurrentPips);
+                singleTargetAction.UseOn(character, _activeHeroDice.RolledSide.CurrentPips);
                 Next();
             }
             else throw new Exception("Ѕро, тут того немаЇ бути. “ут клуб лише дл€ с≥нгл");

@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DamageAction : GameAction, IChooseTargetAction
 {
+    public override event Action OnActionUsed;
+
     public DamageAction(int basePips, bool usingPips = true) : base(basePips, usingPips)
     {
         _name = "Damage";
@@ -18,5 +21,7 @@ public class DamageAction : GameAction, IChooseTargetAction
         if (character == null) return;
 
         character.TakeDamage(pips);
+
+        OnActionUsed?.Invoke();
     }
 }

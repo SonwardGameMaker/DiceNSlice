@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -22,6 +23,7 @@ public class UiManager : MonoBehaviour
     [Header("Other")]
     [SerializeField] int _deltaMoveCoef;
 
+    private List<CharacterFrame> _characterFrames;
     private bool _isSet = false;
     private float deltaMove;
     #endregion
@@ -51,6 +53,7 @@ public class UiManager : MonoBehaviour
         _turnsDisplay.Setup();
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
+        _characterFrames = new List<CharacterFrame>();
     }
     #endregion
 
@@ -63,7 +66,7 @@ public class UiManager : MonoBehaviour
 
     public void SetEnemies(List<Enemy> enemies)
     {
-        foreach(var enemy in enemies)
+        foreach (var enemy in enemies)
             AddCharacter(enemy);
     }
 
@@ -84,17 +87,23 @@ public class UiManager : MonoBehaviour
 
         GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity);
         go.transform.SetParent(characterGroup.transform, false);
-        go.GetComponentInChildren<CharacterFrame>().Setup(character);
+        CharacterFrame frame = go.GetComponentInChildren<CharacterFrame>();
+        frame.Setup(character);
+        _characterFrames.Add(frame);
     }
 
     public void UpdateCharacter(Character character)
         => GetCharacterFrame(character).UpdateData();
+
+    public void UpdateCharacterDice(Character character)
+        => GetCharacterFrame(character).UpdateDiceData();
 
     public bool RemoveCharacter(Character character)
     {
         var frame = GetCharacterFrame(character);
         if (frame != null)
         {
+            _characterFrames.Remove(frame);
             Destroy(frame);
             return true;
         }
@@ -174,25 +183,32 @@ public class UiManager : MonoBehaviour
     }
 
     public void DisableCharacter(Character character)
-        => GetCharacterFrame(character).gameObject.SetActive(false);
+        => GetCharacterFrame(character).SetActive(false);
 
     public void EnableCharacter(Character character)
-        => GetCharacterFrame(character).gameObject.SetActive(true);
+        => GetCharacterFrame(character).SetActive(true);
 
     public CharacterFrame GetCharacterFrame(Character character)
     {
-        VerticalLayoutGroup characterGroup = character is Hero ? _heroes : _enemies;
+        if (character == null) return null;
 
-        for (int i = 0; i < characterGroup.transform.childCount; i++)
-        {
-            var tempCharacter = characterGroup.transform.GetChild(i).GetComponentInChildren<CharacterFrame>();
-            if (tempCharacter.Character == character)
-            {
-                return tempCharacter;
-            }
-        }
+        return _characterFrames.Find(cf => cf.Character == character);
+    }
 
-        return null;
+    /// <summary>
+    /// Resets ChracterFrame local list with current Character Group childrens
+    /// </summary>
+    public void ResetCharacterFrameList()
+    {
+        List<CharacterFrame> result = new List<CharacterFrame>();
+
+        for (int i = 0; i < _heroes.transform.childCount; i++)
+            result.Add(_heroes.transform.GetChild(i).GetComponentInChildren<CharacterFrame>());
+
+        for (int i = 0; i < _enemies.transform.childCount; i++)
+            result.Add(_enemies.transform.GetChild(i).GetComponentInChildren<CharacterFrame>());
+
+        _characterFrames = result;
     }
     #endregion
 

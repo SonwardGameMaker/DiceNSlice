@@ -11,14 +11,18 @@ public class CharacterFrame : MonoBehaviour
     #region fields
     [SerializeField] private TMP_Text _charName;
     [SerializeField] private UnityEngine.UI.Image _portraitImage;
-    [SerializeField] private UnityEngine.UI.Image _diceCellImage;
     [SerializeField] private HealthPointsLabel _healthPointsLabel;
     [SerializeField] private UnityEngine.UI.Image _shieldsImage;
     [SerializeField] private TMP_Text _shieldCount;
+
+    [Header("Dice cell image")]
+    [SerializeField] private UnityEngine.UI.Image _diceCellImage;
     [SerializeField] private UnityEngine.UI.Image _rolledDiceSide;
     [SerializeField] private TMP_Text _pipsCount;
+    [SerializeField] private UnityEngine.UI.Image _usageIndicator;
 
     private Character _character;
+    private Dice _dice;
 
     private RectTransform _rectTransform;
     private Vector2 _defaultPosition;
@@ -33,6 +37,7 @@ public class CharacterFrame : MonoBehaviour
         SetupFrameSize();
 
         UpdateData();
+        UpdateDiceData();
 
         // TODO: Make scaling for shield icon
         void SetupFrameSize()
@@ -57,6 +62,7 @@ public class CharacterFrame : MonoBehaviour
     public void Setup(Character character)
     {
         _character = character;
+        _dice = character.Dice;
         Setup();
     }
     #endregion
@@ -94,16 +100,31 @@ public class CharacterFrame : MonoBehaviour
         SetShields(_character.Shields);
     }
 
-    public void SetRolledDice()
+    public void UpdateDiceData()
     {
-        if (_character.Dice.LockedSide == null) 
+        if (_dice.RolledSide == null)
             return;
 
-        _rolledDiceSide.sprite = _character.Dice.LockedSide.Sprite;
-        _pipsCount.text = _character.Dice.LockedSide.CurrentPips.ToString();
+        _rolledDiceSide.sprite = _dice.RolledSide.Sprite;
+        _pipsCount.text = _dice.RolledSide.CurrentPips.ToString();
+
+        if (_dice.RolledSide.Enabled) _usageIndicator.gameObject.SetActive(false);
+        else _usageIndicator.gameObject.SetActive(true);
+    }
+
+    public void SetRolledDice()
+    {
+        if (_character.Dice.RolledSide == null) 
+            return;
+
+        _rolledDiceSide.sprite = _character.Dice.RolledSide.Sprite;
+        _pipsCount.text = _character.Dice.RolledSide.CurrentPips.ToString();
 
         // TODO: make it normal
     }
+
+    public void SetActive(bool isActive)
+        => transform.parent.gameObject.SetActive(isActive);
     #endregion
 
     #region internal operations

@@ -9,8 +9,8 @@ public abstract class GameManagerBase : MonoBehaviour
 {
     #region init
     // Character Manager
-    protected abstract void CharacterManagerSubscribe();
-    protected abstract void CharacterManagerUnsubscribe();
+    protected abstract void CharacterManagerSubscription();
+    protected abstract void CharacterManagerUnsubscription();
 
     // Combat Manager
     protected abstract void CombatManagerSubscription();
