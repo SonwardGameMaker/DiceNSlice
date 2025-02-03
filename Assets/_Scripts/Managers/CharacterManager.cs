@@ -8,31 +8,18 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class CharacterManager : MonoBehaviour
 {
     #region fields
-    private const int MaxHeroCount = 5;
-    private const int MaxPoolEnemySize = 10;
-
     [Header("Containers")]
     [SerializeField] private Transform _heroContainer;
     [SerializeField] private Transform _enemyContainer;
 
-    // heroes
     private List<Hero> _heroes;
-    private List<Hero> _deadHeroes;
-    // enemies
     private List<Enemy> _enemies;
-    private List<Enemy> _deadEnemies;
-    private List<Enemy> _reinforcementEnemies;
-
-    private bool _enemiesInTwoLines;
-    private int _currentPoolEnemySize;
     #endregion
 
     #region events
     public event Action<Character> OnCharacterCreated;
     public event Action<Character> OnCharacterDeleted;
     public event Action<Character> OnCharacterChanged;
-    public event Action<Character> OnCharacterEnterScene;
-    public event Action<Character> OnCharacterLeaveScene;
     #endregion
 
     #region init
@@ -65,14 +52,7 @@ public class CharacterManager : MonoBehaviour
     public void Setup()
     {
         _heroes = new List<Hero>();
-        _deadHeroes = new List<Hero>();
-
         _enemies = new List<Enemy>();
-        _deadEnemies = new List<Enemy>();
-        _reinforcementEnemies = new List<Enemy>();
-
-        _enemiesInTwoLines = false;
-        _currentPoolEnemySize = 0;
     }
 
     public void Setup(List<HeroSO> heroes, List<EnemySO> enemies)
@@ -85,43 +65,16 @@ public class CharacterManager : MonoBehaviour
         else
             _heroes = heroes;
 
-        _deadHeroes = new List<Hero>();
-
-        _currentPoolEnemySize = 0;
         if (enemies == null)
             enemies = new List<Enemy>();
         else
-        {
-            if (CalculateCharSizePool(enemies) <= MaxPoolEnemySize)
-            {
-                _enemies = enemies;
-                _reinforcementEnemies = new List<Enemy>();
-
-                // Tests
-                _enemies[0].ChangeShields(2);
-            }
-            else
-            {
-                (List<Enemy>, List<Enemy>) result = SplitIntoReinforcements(enemies);
-                _enemies = result.Item1;
-                _reinforcementEnemies = result.Item2;
-            }
-            RefreshEnemiesData();
-        }
-        _deadEnemies = new List<Enemy>();
+            _enemies = enemies;
     }
     #endregion
 
     #region properties
     public List<Hero> Heroes => _heroes;
-    public List<Hero> DeadHeroes => _deadHeroes;
-
     public List<Enemy> Enemies => _enemies;
-    public List<Enemy> DeadEnemies => _deadEnemies;
-    public List<Enemy> EnemyReinforcements => _reinforcementEnemies;
-
-    public int CurrentEnemyPoolSize => _currentPoolEnemySize;
-    public bool EnemiesInTwoLines => _enemiesInTwoLines;
     #endregion
 
     #region exteral interactions heroes
@@ -152,13 +105,6 @@ public class CharacterManager : MonoBehaviour
         DeleteCharacter(hero, _heroContainer);
     }
 
-    public void HeroDies(Hero hero)
-    {
-        _deadHeroes.Add(hero);
-        _heroes.Remove(hero);
-        OnCharacterLeaveScene?.Invoke(hero);
-    }
-
     public void ResetHeroesShields()
         => ResetShields(_heroes);
     #endregion
@@ -173,49 +119,12 @@ public class CharacterManager : MonoBehaviour
     }
 
     public void AddEnemy(EnemySO so)
-    {
-        Enemy enemy = (Enemy)CreateCharacter<Enemy>(so, _enemyContainer, "_Enemy");
-
-        if ((int)enemy.CharacterSize + _currentPoolEnemySize <= MaxPoolEnemySize)
-        {
-            _enemies.Add(enemy);
-            RefreshEnemiesData();
-        }
-        else
-            _reinforcementEnemies.Add(enemy);
-
-    }
+        => _enemies.Add((Enemy)CreateCharacter<Enemy>(so, _enemyContainer, "_Enemy"));
 
     public void DeleteEnemy(Enemy enemy)
     {
         _enemies.Remove(enemy);
-        _deadEnemies.Remove(enemy);
-        _reinforcementEnemies.Remove(enemy);
-
         DeleteCharacter(enemy, _enemyContainer);
-        RefreshEnemiesData();
-        TryGetEnemyFromReinforcements();
-    }
-
-    public void EnemyDies(Enemy enemy)
-    {
-        _deadEnemies.Add(enemy);
-        _enemies.Remove(enemy);
-
-        RefreshEnemiesData();
-        TryGetEnemyFromReinforcements();
-        OnCharacterLeaveScene?.Invoke(enemy);
-    }
-
-    public void MoveEnemyToReinforcements(Enemy enemy, List<Enemy> enemyList = null)
-    {
-        if (enemyList == null) enemyList = _enemies;
-        if (enemyList == _reinforcementEnemies) return;
-
-        _reinforcementEnemies.Add(enemy);
-        enemyList.Remove(enemy);
-        RefreshEnemiesData();
-        OnCharacterLeaveScene?.Invoke(enemy);
     }
 
     public void ResetEnemiesShields()
@@ -273,34 +182,6 @@ public class CharacterManager : MonoBehaviour
         return false;
     }
 
-    private void CharacterDies<T>(T charatcer, List<T> aliveCharatcers, List<T> deadCharacters) where T : Character
-    {
-        deadCharacters.Add(charatcer);
-        aliveCharatcers.Remove(charatcer);
-    }
-
-    private void CharacterUndies<T>(T charatcer, List<T> aliveCharatcers, List<T> deadCharacters) where T : Character
-    {
-        aliveCharatcers.Add(charatcer);
-        deadCharacters.Remove(charatcer);
-    }
-
-    private void ClearUpList<T>(List<T> list) where T : Character
-        => list.RemoveAll(c => c.gameObject == null);
-
-    private void CleanUpAllCharacterLists()
-    {
-        _heroes.RemoveAll(h => h.gameObject == null);
-        _deadEnemies.RemoveAll(h => h.gameObject == null);
-
-        _enemies.RemoveAll(e=> e.gameObject == null);
-        _deadEnemies.RemoveAll(e => e.gameObject == null);
-        _reinforcementEnemies.RemoveAll(e => e.gameObject == null);
-    }
-
-    private int CalculateCharSizePool<T>(List<T> characters) where T : Character
-        => characters.Sum(c => (int)c.CharacterSize);
-
     private void ResetShields<T>(List<T> characters) where T : Character
     {
         foreach (T character in characters)
@@ -332,88 +213,6 @@ public class CharacterManager : MonoBehaviour
 
     public Enemy CreateEnemy(EnemySO so)
         => (Enemy)CreateCharacter<Enemy>(so, _enemyContainer, "_Enemy");
-
-    /// <summary>
-    /// First list is for active enemies, second - for reinforcement
-    /// </summary>
-    /// <param name="enemies"></param>
-    /// <returns></returns>
-    private (List<Enemy>, List<Enemy>) SplitIntoReinforcements(List<Enemy> enemies)
-    {
-        List<Enemy> activeEnemies = new List<Enemy>();
-        List<Enemy> reinforcementsEnemy = new List<Enemy>();
-
-        int activeSizePull = _currentPoolEnemySize;
-        int count = 0;
-        while (activeSizePull <= MaxPoolEnemySize)
-        {
-            AddToActive();
-            count++;
-        }
-
-        for (int i = count; i < enemies.Count; i++)
-            reinforcementsEnemy.Add(enemies[i]);
-
-        while (activeSizePull <= MaxPoolEnemySize && count < enemies.Count)
-        {
-            if (activeSizePull + (int)enemies[count].CharacterSize <= MaxPoolEnemySize)
-            {
-                AddToActive();
-            }
-            count++;
-        }
-
-        return new(activeEnemies, reinforcementsEnemy);
-
-        // Utils
-        void AddToActive()
-        {
-            activeEnemies.Add(enemies[count]);
-            activeSizePull += (int)enemies[count].CharacterSize;
-        }
-    }
-
-    private bool TryGetEnemyFromReinforcements()
-    {
-        if (_reinforcementEnemies == null || _reinforcementEnemies.Count == 0) return false;
-
-        foreach (Enemy enemy in _reinforcementEnemies)
-            if (_currentPoolEnemySize + (int)enemy.CharacterSize <= MaxPoolEnemySize)
-            {
-                _enemies.Add(enemy);
-                _reinforcementEnemies.Remove(enemy);
-                RefreshEnemiesData();
-                OnCharacterEnterScene?.Invoke(enemy);
-            }
-
-        return true;
-    }
-
-    private void CheckEnemiesLines()
-    {
-        if (_enemies == null || _enemies.Count == 0) return;
-
-        bool onBackline = _enemies[0].OnBackline;
-        foreach (Enemy enemy in _enemies)
-            if (enemy.OnBackline != onBackline)
-            { 
-                _enemiesInTwoLines = true;
-                return;
-            }
-        
-        _enemiesInTwoLines = false;
-    }
-
-    private void RefreshEnemiesData()
-    {
-        if (CalculateCharSizePool(_enemies) > MaxPoolEnemySize)
-        {
-            // make full reset from GameObjects
-        }
-
-        _currentPoolEnemySize = CalculateCharSizePool(_enemies);
-        CheckEnemiesLines();
-    }
     #endregion
 
     #region event hanlers

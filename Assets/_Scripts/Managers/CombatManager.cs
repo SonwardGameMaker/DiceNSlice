@@ -6,7 +6,10 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    CombatStateMachine _stateMachine;
+    #region fields
+    private CombatStateMachine _stateMachine;
+    private CombatManagerCharacterController _characterController;
+    #endregion
 
     #region events
     // States
@@ -17,6 +20,9 @@ public class CombatManager : MonoBehaviour
     public event Action<Hero> OnHeroActivated;
     public event Action<Hero> OnHeroDeactivated;
 
+    public event Action<Character> OnCharacterEnterScene;
+    public event Action<Character> OnCharacterLeaveScene;
+
     // Combat flow
     public event Action OnTurnEnded;
     #endregion
@@ -26,7 +32,27 @@ public class CombatManager : MonoBehaviour
     {
         _stateMachine = new CombatStateMachine();
 
+        _characterController = new CombatManagerCharacterController();
+
         _stateMachine.OnTurnEnded += OnTurnEndedHandler;
+
+        Subscribe();
+    }
+
+    private void Setup(List<Hero> heroes, List<Enemy> enemies)
+    {
+        _stateMachine = new CombatStateMachine();
+
+        _characterController = new CombatManagerCharacterController(heroes, enemies);
+
+        Subscribe();
+    }
+
+    private void Subscribe()
+    {
+        _stateMachine.OnTurnEnded += OnTurnEndedHandler;
+        _characterController.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+        _characterController.OnCharacterLeaveScene += OnCharacterLeaveSceneHandler;
 
         SubscribeToPreparingState();
         SubscribeToRollingState();
@@ -62,7 +88,6 @@ public class CombatManager : MonoBehaviour
             //abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
             abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
         }
-
     }
 
     private void OnDestroy()
@@ -73,6 +98,8 @@ public class CombatManager : MonoBehaviour
         UnsubscribeToAbilityActiveState();
 
         _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
+        _characterController.OnCharacterEnterScene -= OnCharacterEnterSceneHandler;
+        _characterController.OnCharacterLeaveScene -= OnCharacterLeaveSceneHandler;
 
         void UnsubscribeToPreparingState()
         {
@@ -107,6 +134,7 @@ public class CombatManager : MonoBehaviour
 
     #region properties
     public CombatStateMachine StateMachine => _stateMachine;
+    public CombatManagerCharacterController CharacterController => _characterController;
     #endregion
 
     #region external interactions
@@ -142,5 +170,11 @@ public class CombatManager : MonoBehaviour
 
     private void OnHeroDeactivatedHandlder(Hero hero)
         => OnHeroDeactivated?.Invoke(hero);
+
+    private void OnCharacterEnterSceneHandler(Character character)
+        => OnCharacterEnterScene?.Invoke(character);
+
+    private void OnCharacterLeaveSceneHandler(Character character)
+        => OnCharacterLeaveScene?.Invoke(character);
     #endregion
 }
