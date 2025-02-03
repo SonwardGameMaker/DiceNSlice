@@ -54,8 +54,8 @@ public class TempGameManager : GameManagerBase
         _characterManager.OnCharacterDeleted += OnCharacterRemovedHandler;
         _characterManager.OnCharacterChanged += OnCharacterChangedHandler;
 
-        _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
-        _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
+        _combatManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+        _combatManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
     }
     protected override void CharacterManagerUnsubscription()
     {
@@ -63,8 +63,7 @@ public class TempGameManager : GameManagerBase
         _characterManager.OnCharacterDeleted -= OnCharacterRemovedHandler;
         _characterManager.OnCharacterChanged -= OnCharacterChangedHandler;
 
-        _characterManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
-        _characterManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
+        
     }
 
     // Dice Manager
@@ -87,6 +86,8 @@ public class TempGameManager : GameManagerBase
 
         _combatManager.OnHeroActivated += OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+        _combatManager.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+        _combatManager.OnCharacterLeaveScene += OnCharacterLeaveScene;
 
         _combatManager.OnTurnEnded += OnTurnEndedHandler;
     }
@@ -97,6 +98,11 @@ public class TempGameManager : GameManagerBase
 
         _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
         _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
+
+        _combatManager.OnCharacterEnterScene -= OnCharacterEnterSceneHandler;
+        _combatManager.OnCharacterLeaveScene -= OnCharacterLeaveScene;
+
+        _combatManager.OnTurnEnded -= OnTurnEndedHandler;
     }
 
     // UI Manager

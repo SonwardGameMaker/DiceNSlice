@@ -80,28 +80,19 @@ public class CharacterManager : MonoBehaviour
     #region exteral interactions heroes
     public void AddHeroes(List<HeroSO> sOs)
     {
-        if (_heroes.Count + sOs.Count > MaxHeroCount)
-            return;
-
         List<Hero> heroes = CreateHeroes(sOs);
 
         _heroes.AddRange(heroes);
-        _heroes = _heroes.OrderBy(h => (int)h.HeroClass).ToList();
     }
 
     public void AddHero(HeroSO so)
     {
-        if (_heroes.Count >= MaxHeroCount) 
-            return;
-
         _heroes.Add(CreateHero(so));
-        _heroes = _heroes.OrderBy(h => (int)h.HeroClass).ToList();
     }
 
     public void DeleteHero(Hero hero)
     {
         _heroes.Remove(hero);
-        _deadHeroes.Remove(hero);
         DeleteCharacter(hero, _heroContainer);
     }
 
@@ -112,10 +103,8 @@ public class CharacterManager : MonoBehaviour
     #region exteral interactions enemies
     public void AddEnemies(List<EnemySO> enemies)
     {
-        (List<Enemy>, List<Enemy>) result = SplitIntoReinforcements(enemies.Select(h => CreateEnemy(h)).ToList());
-        _enemies.AddRange(result.Item1);
-        _reinforcementEnemies.AddRange(result.Item2);
-        RefreshEnemiesData();
+        List<Enemy> result = enemies.Select(h => CreateEnemy(h)).ToList();
+        _enemies.AddRange(result);
     }
 
     public void AddEnemy(EnemySO so)
@@ -218,17 +207,7 @@ public class CharacterManager : MonoBehaviour
     #region event hanlers
     private void OnCharacterChangedHandler(Character character)
     {
-        CheckEnemiesLines();
-
-        if (character.CurrentHealth > 0)
-            OnCharacterChanged?.Invoke(character);
-        else
-        {
-            if (character is Hero)
-                HeroDies(character as Hero);
-            else
-                EnemyDies(character as Enemy);
-        }
+        OnCharacterChanged?.Invoke(character);
     }
     #endregion
 }

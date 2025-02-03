@@ -86,8 +86,21 @@ public class CombatManagerCharacterController
     #endregion
 
     #region external interactions heroes
+    public void AddHeroes(List<Hero> heroes)
+    {
+        if (_presentHeroes.Count + heroes.Count > MaxHeroCount)
+            return;
+
+        _presentHeroes.AddRange(heroes);
+        _presentHeroes = _presentHeroes.OrderBy(h => (int)h.HeroClass).ToList();
+    }
+
     public void AddHero(Hero hero)
-        => _presentHeroes.Add(hero);
+    {
+        if (_presentHeroes.Count >= MaxHeroCount) return;
+        
+        _presentHeroes.Add(hero);
+    }
 
     public void HeroDies(Hero hero)
     {
