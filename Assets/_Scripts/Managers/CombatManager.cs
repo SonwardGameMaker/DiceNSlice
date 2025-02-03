@@ -39,7 +39,7 @@ public class CombatManager : MonoBehaviour
         Subscribe();
     }
 
-    private void Setup(List<Hero> heroes, List<Enemy> enemies)
+    public void Setup(List<Hero> heroes, List<Enemy> enemies)
     {
         _stateMachine = new CombatStateMachine();
 

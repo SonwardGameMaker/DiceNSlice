@@ -23,9 +23,9 @@ public class TempGameManager : GameManagerBase
     private void Start()
     {
         _characterManager.Setup(_initSO.Heroes, _initSO.Enemies);
-        _diceManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
-        _combatManager.Setup();
-        _uiManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
+        _combatManager.Setup(_characterManager.Heroes, _characterManager.Enemies);
+        _diceManager.Setup(_combatManager.CharacterController.PresentHeroes, _combatManager.CharacterController.PresentEnemies);
+        _uiManager.Setup(_combatManager.CharacterController.PresentHeroes, _combatManager.CharacterController.PresentEnemies);
 
         // Event Subscription
         CharacterManagerSubscription();
@@ -149,18 +149,6 @@ public class TempGameManager : GameManagerBase
 
     private void OnCharacterChangedHandler(Character character)
         => _uiManager.UpdateCharacter(character);
-
-    private void OnCharacterEnterSceneHandler(Character character)
-    {
-        _diceManager.GetControllerByCharacter(character).Enabled = true;
-        _uiManager.EnableCharacter(character);
-    }
-
-    private void OnCharacterLeaveScene(Character character)
-    {
-        _diceManager.GetControllerByCharacter(character).Enabled = false;
-        _uiManager.DisableCharacter(character);
-    }
     #endregion
 
     #region Dice Manager event handlers
@@ -209,6 +197,18 @@ public class TempGameManager : GameManagerBase
 
         _diceManager.EnableEnemyDices();
         _diceManager.EnableHeroDices();
+    }
+
+    private void OnCharacterEnterSceneHandler(Character character)
+    {
+        _diceManager.GetControllerByCharacter(character).Enabled = true;
+        _uiManager.EnableCharacter(character);
+    }
+
+    private void OnCharacterLeaveScene(Character character)
+    {
+        _diceManager.GetControllerByCharacter(character).Enabled = false;
+        _uiManager.DisableCharacter(character);
     }
     #endregion
 
