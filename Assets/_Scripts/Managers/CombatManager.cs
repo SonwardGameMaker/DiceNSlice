@@ -1,14 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class CombatManager : MonoBehaviour
+public class CombatManager : MonoBehaviour, ICombatManager
 {
     #region fields
+    private ICharacterManager _characterManager;
+
     private CombatStateMachine _stateMachine;
-    private CombatManagerCharacterController _characterController;
+    private ICombatCharacterLists _combatLists;
     #endregion
 
     #region events
@@ -20,39 +20,31 @@ public class CombatManager : MonoBehaviour
     public event Action<Hero> OnHeroActivated;
     public event Action<Hero> OnHeroDeactivated;
 
-    public event Action<Character> OnCharacterEnterScene;
-    public event Action<Character> OnCharacterLeaveScene;
-
     // Combat flow
-    public event Action OnTurnEnded;
+    public event Action<bool> OnCombatEnded;
     #endregion
 
     #region init
-    public void Setup()
+    public void Setup(ICharacterManager charactcerManager)
     {
-        _stateMachine = new CombatStateMachine();
+        _characterManager = charactcerManager;
+        _combatLists = new CombatCharacterLists(charactcerManager.Heroes, charactcerManager.Enemies);
+        _stateMachine = new CombatStateMachine(_combatLists);
 
-        _characterController = new CombatManagerCharacterController();
-
-        _stateMachine.OnTurnEnded += OnTurnEndedHandler;
-
-        Subscribe();
+        SubscribeToInnerStates();
+        SubscribeToCharacterManager();
     }
 
-    public void Setup(List<Hero> heroes, List<Enemy> enemies)
+    private void SubscribeToCharacterManager()
     {
-        _stateMachine = new CombatStateMachine();
-
-        _characterController = new CombatManagerCharacterController(heroes, enemies);
-
-        Subscribe();
+        _characterManager.OnCharacterCreated += OnCharacterCreatedHandler;
+        _characterManager.OnCharacterDeleted += OnCharacterDeletelHandler;
+        _characterManager.OnCharacterChanged += OnCharacterChangedHandler;
     }
 
-    private void Subscribe()
+    private void SubscribeToInnerStates()
     {
         _stateMachine.OnTurnEnded += OnTurnEndedHandler;
-        _characterController.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
-        _characterController.OnCharacterLeaveScene += OnCharacterLeaveSceneHandler;
 
         SubscribeToPreparingState();
         SubscribeToRollingState();
@@ -85,21 +77,20 @@ public class CombatManager : MonoBehaviour
             AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
             if (abilitActiveState == null) throw new NullReferenceException(nameof(AbilitActiveState));
 
-            //abilitActiveState.OnHeroActivated += OnHeroActivatedHandlder;
             abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
         }
     }
 
     private void OnDestroy()
     {
+        UnsubscribeToCharacterManager();
+
         UnsubscribeToPreparingState();
         UnsubscribeToRollingState();
         UnsubscribeToIdleState();
         UnsubscribeToAbilityActiveState();
 
         _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
-        _characterController.OnCharacterEnterScene -= OnCharacterEnterSceneHandler;
-        _characterController.OnCharacterLeaveScene -= OnCharacterLeaveSceneHandler;
 
         void UnsubscribeToPreparingState()
         {
@@ -126,15 +117,22 @@ public class CombatManager : MonoBehaviour
         {
             AbilitActiveState abilitActiveState = _stateMachine.GetState<AbilitActiveState>();
 
-            //abilitActiveState.OnHeroActivated -= OnHeroActivated;
             abilitActiveState.OnHeroDeactivated -= OnHeroDeactivated;
+        }
+
+
+        void UnsubscribeToCharacterManager()
+        {
+            _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
+            _characterManager.OnCharacterDeleted -= OnCharacterDeletelHandler;
+            _characterManager.OnCharacterChanged -= OnCharacterChangedHandler;
         }
     }
     #endregion
 
     #region properties
     public CombatStateMachine StateMachine => _stateMachine;
-    public CombatManagerCharacterController CharacterController => _characterController;
+    public ICombatCharacterLists CombatLists => _combatLists;
     #endregion
 
     #region external interactions
@@ -155,6 +153,30 @@ public class CombatManager : MonoBehaviour
     #endregion
 
     #region event handlers
+    // Character Manager
+    private void OnCharacterCreatedHandler(Character character)
+    {
+        if (character is Hero hero)
+            _combatLists.AddHero(hero);
+        else if (character is Enemy enemy)
+            _combatLists.AddEnemy(enemy);
+        else
+            return;
+    }
+
+    private void OnCharacterChangedHandler(Character character)
+        => _combatLists.OnCharacterChangedHandler(character);
+
+    private void OnCharacterDeletelHandler(Character character)
+    {
+        if (character is Hero hero)
+            _combatLists.RemoveHero(hero);
+        else if (character is Enemy enemy)
+            _combatLists.RemoveEnemy(enemy);
+        else
+            return;
+    }
+
     // States
     private void OnPreparingStateStartsHandler()
         => OnPreparingStateStarts?.Invoke();
@@ -163,18 +185,14 @@ public class CombatManager : MonoBehaviour
         => OnRollingStateStarts?.Invoke();
 
     private void OnTurnEndedHandler()
-        => OnTurnEnded?.Invoke();
+    {
+
+    }
 
     private void OnHeroActivatedHandlder(Hero hero)
         => OnHeroActivated?.Invoke(hero);
 
     private void OnHeroDeactivatedHandlder(Hero hero)
         => OnHeroDeactivated?.Invoke(hero);
-
-    private void OnCharacterEnterSceneHandler(Character character)
-        => OnCharacterEnterScene?.Invoke(character);
-
-    private void OnCharacterLeaveSceneHandler(Character character)
-        => OnCharacterLeaveScene?.Invoke(character);
     #endregion
 }

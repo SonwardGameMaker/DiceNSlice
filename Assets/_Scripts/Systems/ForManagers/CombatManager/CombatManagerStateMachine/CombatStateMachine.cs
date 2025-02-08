@@ -20,12 +20,12 @@ public class CombatStateMachine
     #endregion
 
     #region init
-    public CombatStateMachine()
+    public CombatStateMachine(ICombatCharacterLists combatCharacterLists)
     {
         _stateList = new List<CombatState>();
         _stateList.Add(new PreparingState(this));
         _stateList.Add(new RollingSate(this));
-        _stateList.Add(new IdleState(this));
+        _stateList.Add(new IdleState(this, combatCharacterLists));
         _stateList.Add(new AbilitActiveState(this));
         _stateList.Add(new EnemyTurnState(this));
     }

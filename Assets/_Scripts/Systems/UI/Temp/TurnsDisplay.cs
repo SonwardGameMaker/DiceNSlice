@@ -11,7 +11,7 @@ public class TurnsDisplay : MonoBehaviour
     public void Setup()
     {
         SetCountText();
-        _combatManager.OnTurnEnded += SetCountText;
+        //_combatManager.OnTurnEnded += SetCountText;
     }
 
     private void SetCountText()

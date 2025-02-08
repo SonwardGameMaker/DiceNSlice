@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.TextCore.Text;
 using static UnityEngine.EventSystems.EventTrigger;
 
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : MonoBehaviour, ICharacterManager
 {
     #region fields
     [Header("Containers")]

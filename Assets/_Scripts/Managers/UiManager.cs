@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
-public class UiManager : MonoBehaviour
+public class UiManager : MonoBehaviour, IUiManager
 {
     #region fields
     [Header("Prefabs")]
@@ -20,30 +20,55 @@ public class UiManager : MonoBehaviour
     // debug
     [SerializeField] private TurnsDisplay _turnsDisplay;
 
+    [Header("Components")]
+    [SerializeField] private InputHandler _inputHandler;
+
     [Header("Other")]
-    [SerializeField] int _deltaMoveCoef;
+    [SerializeField] private int _deltaMoveCoef;
+
+    private ICombatCharacterLists _characterLists;
+    private ICombatManager _combatManager;
+    private IDiceManager _diceManager;
 
     private List<CharacterFrame> _characterFrames;
-    private bool _isSet = false;
     private float deltaMove;
     #endregion
 
     #region init
-    public void Setup()
+    public void Setup(ICombatManager combatManager, IDiceManager diceManager, IInputManager inputManager)
     {
-        if (_isSet) return;
+        _diceManager = diceManager;
+        _combatManager = combatManager;
+        _characterLists = combatManager.CombatLists;
+        _inputHandler.Setup(inputManager, combatManager);
 
         Init();
-    }
+        SubscribeToCombatFlow();
+        SubscribeToCharacters();
+        SubscribeToDices();
 
-    public void Setup(List<Hero> heroes, List<Enemy> enemies)
-    {
-        if (_isSet) return;
+        SetHeroes(_characterLists.PresentHeroes);
+        SetEnemies(_characterLists.PresentEnemies);
 
-        Init();
+        void SubscribeToCharacters()
+        {
+            _characterLists.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+            _characterLists.OnCharacterLeaveScene += OnCharacterLeaveSceneHandler;
+            _characterLists.OnCharacterChanged += OnCharacterChangedHandler;
+            _characterLists.OnCharacterCreated += OnCharacterCreatedHandler;
+            _characterLists.OnCharacterDeleted += OnCharacterDeletedHandler;
+        }
 
-        SetHeroes(heroes);
-        SetEnemies(enemies);
+        void SubscribeToDices()
+        {
+            _diceManager.OnDiceChanged += OnDiceChangedHandler;
+        }
+
+        void SubscribeToCombatFlow()
+        {
+            _combatManager.OnHeroActivated += OnHeroActivatedHandler;
+            _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+        }
     }
 
     private void Init()
@@ -54,6 +79,33 @@ public class UiManager : MonoBehaviour
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
         _characterFrames = new List<CharacterFrame>();
+    }
+
+    private void OnDestroy()
+    {
+        UnsubscribeToCombatFlow();
+        UnsubscribeToDices();
+        UnubscribeToCharacters();
+
+        void UnubscribeToCharacters()
+        {
+            _characterLists.OnCharacterEnterScene -= OnCharacterEnterSceneHandler;
+            _characterLists.OnCharacterLeaveScene -= OnCharacterLeaveSceneHandler;
+            _characterLists.OnCharacterChanged -= OnCharacterChangedHandler;
+            _characterLists.OnCharacterCreated -= OnCharacterCreatedHandler;
+            _characterLists.OnCharacterDeleted -= OnCharacterDeletedHandler;
+        }
+
+        void UnsubscribeToDices()
+        {
+            _diceManager.OnDiceChanged -= OnDiceChangedHandler;
+        }
+
+        void UnsubscribeToCombatFlow()
+        {
+            _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
+            _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
+        }
     }
     #endregion
 
@@ -70,7 +122,7 @@ public class UiManager : MonoBehaviour
             AddCharacter(enemy);
     }
 
-    public void AddCharacter(Character character)
+    public void AddCharacter(Character character, bool isActive = true)
     {
         GameObject prefab;
         VerticalLayoutGroup characterGroup;
@@ -89,6 +141,7 @@ public class UiManager : MonoBehaviour
         go.transform.SetParent(characterGroup.transform, false);
         CharacterFrame frame = go.GetComponentInChildren<CharacterFrame>();
         frame.Setup(character);
+        frame.SetActive(isActive);
         _characterFrames.Add(frame);
     }
 
@@ -130,58 +183,6 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public bool IsUiElementSelected(Vector3 position)
-    {
-        List<RaycastResult> raycastResults = GetRaycastResults(position);
-
-        return IsUiElementSelected(raycastResults);
-    }
-    public bool IsUiElementSelected(List<RaycastResult> raycastResults)
-    {
-        foreach (var raycastResult in raycastResults)
-        {
-            if (raycastResult.gameObject.layer == LayerMask.GetMask("UI"))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public Character IsCharacterSelected(Vector3 position)
-    {
-        List<RaycastResult> raycastResults = GetRaycastResults(position);
-
-        return IsCharacterSelected(raycastResults);
-    }
-    public Character IsCharacterSelected(List<RaycastResult> raycastResults)
-    {
-        foreach (var raycastResult in raycastResults)
-        {
-            CharacterFrame characterFrame = raycastResult.gameObject.GetComponent<CharacterFrame>();
-            if (characterFrame != null)
-            {
-                return characterFrame.Character;
-            }
-        }
-
-        return null;
-    }
-
-    public List<RaycastResult> GetRaycastResults(Vector3 position)
-    {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current)
-        {
-            position = position
-        };
-
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, raycastResults);
-
-        return raycastResults;
-    }
-
     public void DisableCharacter(Character character)
         => GetCharacterFrame(character).SetActive(false);
 
@@ -215,5 +216,34 @@ public class UiManager : MonoBehaviour
     #region static methods
     public static Vector3 ToWorldPosition(Vector3 position)
         => Camera.main.WorldToScreenPoint(position);
+    #endregion
+
+    #region event handlers
+    // Character Lists Handlers
+    private void OnCharacterEnterSceneHandler(Character character)
+        => EnableCharacter(character);
+
+    private void OnCharacterLeaveSceneHandler(Character character)
+        => DisableCharacter(character);
+
+    private void OnCharacterChangedHandler(Character character)
+        => UpdateCharacter(character);
+
+    // Characters
+    private void OnHeroActivatedHandler(Hero hero)
+        => MoveCharacterForvard(hero);
+
+    private void OnHeroDeactivatedHandler(Hero hero)
+        => MoveCharacterBack(hero);
+
+    private void OnCharacterCreatedHandler(Character character, bool isActive)
+        => AddCharacter(character, isActive);
+
+    private void OnCharacterDeletedHandler(Character character)
+        => RemoveCharacter(character);
+
+    // Dices
+    private void OnDiceChangedHandler(Dice dice)
+        => UpdateCharacterDice(dice.Owner);
     #endregion
 }

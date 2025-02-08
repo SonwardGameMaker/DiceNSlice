@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CombatManagerCharacterController
+public class CombatCharacterLists : ICombatCharacterLists
 {
     #region fields
     private const int MaxHeroCount = 5;
@@ -25,21 +25,13 @@ public class CombatManagerCharacterController
     #region events
     public event Action<Character> OnCharacterEnterScene;
     public event Action<Character> OnCharacterLeaveScene;
-    #endregion
-
-    #region properties
-    public List<Hero> PresentHeroes => _presentHeroes;
-    public List<Hero> DeadHeroes => _deadHeroes;
-
-    public List<Enemy> PresentEnemies => _presentEnemies;
-    public List<Enemy> DeadEnemies => _deadEnemies;
-    public List<Enemy> EnemyReinforcements => _reinforcementEnemies;
-
-    public int CurrentEnemyPoolSize => _currentPoolEnemySize;
+    public event Action<Character, bool> OnCharacterCreated;
+    public event Action<Character> OnCharacterDeleted;
+    public event Action<Character> OnCharacterChanged;
     #endregion
 
     #region init
-    public CombatManagerCharacterController(List<Hero> heroes = null, List<Enemy> enemies = null)
+    public CombatCharacterLists(List<Hero> heroes = null, List<Enemy> enemies = null)
     {
         if (heroes == null)
             heroes = new List<Hero>();
@@ -57,6 +49,17 @@ public class CombatManagerCharacterController
         }
         _deadEnemies = new List<Enemy>();
     }
+    #endregion
+
+    #region properties
+    public List<Hero> PresentHeroes => _presentHeroes;
+    public List<Hero> DeadHeroes => _deadHeroes;
+
+    public List<Enemy> PresentEnemies => _presentEnemies;
+    public List<Enemy> DeadEnemies => _deadEnemies;
+    public List<Enemy> EnemyReinforcements => _reinforcementEnemies;
+
+    public int CurrentEnemyPoolSize => _currentPoolEnemySize;
     #endregion
 
     #region external interactions heroes
@@ -82,6 +85,12 @@ public class CombatManagerCharacterController
         hero.OnCharacterChanged += OnCharacterChangedHandler;
     }
 
+    public void RemoveHero(Hero hero)
+    {
+        _presentHeroes.Remove(hero);
+        _deadHeroes.Remove(hero);
+    }
+
     public void HeroDies(Hero hero)
     {
         _deadHeroes.Add(hero);
@@ -101,7 +110,12 @@ public class CombatManagerCharacterController
         _reinforcementEnemies.AddRange(result.Item2);
         RefreshEnemiesData();
         foreach (Enemy enemy in result.Item1)
+        {
             enemy.OnCharacterChanged += OnCharacterChangedHandler;
+            OnCharacterCreated?.Invoke(enemy, true);
+        }
+        foreach (Enemy enemy in result.Item2)
+            OnCharacterCreated?.Invoke(enemy, false);
     }
 
     public void AddEnemy(Enemy enemy)
@@ -114,6 +128,13 @@ public class CombatManagerCharacterController
         }
         else
             _reinforcementEnemies.Add(enemy);
+    }
+
+    public void RemoveEnemy(Enemy enemy)
+    {
+        _presentEnemies.Remove(enemy);
+        _deadEnemies.Remove(enemy);
+        _reinforcementEnemies.Remove(enemy);
     }
 
     public void MoveEnemyToReinforcements(Enemy enemy, List<Enemy> enemyList = null)
@@ -224,5 +245,20 @@ public class CombatManagerCharacterController
         }
     }
 
+    #endregion
+
+    #region event handlers
+    public void OnCharacterChangedHandler(Character character)
+    {
+        if (character.CurrentHealth > 0)
+            OnCharacterChanged?.Invoke(character);
+        else
+        {
+            if (character is Hero hero)
+                HeroDies(hero);
+            else if (character is Enemy enemy)
+                EnemyDies(enemy);
+        }
+    }
     #endregion
 }

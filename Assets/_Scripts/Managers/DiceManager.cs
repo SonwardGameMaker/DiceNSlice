@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DiceManager : MonoBehaviour
+public class DiceManager : MonoBehaviour, IDiceManager
 {
     #region fields
     [SerializeField] private Transform _heroDiceGroup;
     [SerializeField] private Transform _enemyDiceGroup;
+
+    private ICombatManager _combatManager;
+    private ICombatCharacterLists _combatCharacterLists;
 
     private List<DiceController> _heroDiceControllers;
     private List<DiceController> _enemyDiceControllers;
@@ -18,13 +21,29 @@ public class DiceManager : MonoBehaviour
     #endregion
 
     #region init
-    public void Setup(List<Hero> heroes, List<Enemy> enemies)
-        => Setup(heroes.Select(h => h.Dice).ToList(), enemies.Select(e => e.Dice).ToList());
-
-    public void Setup(List<Dice> heroDices, List<Dice> enemyDices)
+    public void Setup(ICombatManager combatManager)
     {
-        _heroDiceControllers = CreateHeroControllers(heroDices);
-        _enemyDiceControllers = CreateEnemyControllers(enemyDices);
+        _combatManager = combatManager;
+        _combatCharacterLists = combatManager.CombatLists;
+
+        _heroDiceControllers = CreateHeroControllers(combatManager.CombatLists.PresentHeroes.Select(h => h.Dice).ToList());
+        _enemyDiceControllers = CreateEnemyControllers(combatManager.CombatLists.PresentEnemies.Select(e => e.Dice).ToList());
+        _enemyDiceControllers.AddRange(CreateEnemyControllers(combatManager.CombatLists.EnemyReinforcements.Select(e => e.Dice).ToList(), false));
+
+        SubscribeToCombatFlow();
+        SubscribeToCharacters();
+
+        void SubscribeToCombatFlow()
+        {
+            _combatManager.OnPreparingStateStarts += OnPreparingStateStartsHandler;
+            _combatManager.OnRollingStateStarts += OnRollingStateStartsHandler;
+        }
+
+        void SubscribeToCharacters()
+        {
+            _combatCharacterLists.OnCharacterEnterScene += OnCharacterEnterSceneHandler;
+            _combatCharacterLists.OnCharacterLeaveScene += OnCharacterLeaveSceneHandler;
+        }
     }
     #endregion
 
@@ -154,6 +173,29 @@ public class DiceManager : MonoBehaviour
     #endregion
 
     #region event handlers
+    private void OnPreparingStateStartsHandler()
+    {
+        RollEnemyDices();
+        _combatManager.Next();
+    }
+
+
+    private void OnRollingStateStartsHandler()
+    {
+        RollHeroDices();
+        // Temp realization
+        foreach (DiceController heroDiceController in _heroDiceControllers)
+            heroDiceController.LockTheDice();
+
+        _combatManager.Next();
+    }
+
+    private void OnCharacterEnterSceneHandler(Character character)
+        => GetControllerByCharacter(character).Enabled = true;
+
+    private void OnCharacterLeaveSceneHandler(Character character)
+        => GetControllerByCharacter(character).Enabled = false;
+
     private void OnDiceChangedHandler(Dice dice)
         => OnDiceChanged?.Invoke(dice);
     #endregion
