@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         // Event Unsubscription
+        _combatManager.OnCombatEnded -= OnCombatEndedHandler;
     }
     #endregion
 

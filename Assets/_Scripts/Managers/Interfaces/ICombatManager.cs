@@ -20,6 +20,7 @@ public interface ICombatManager
     /// bool - indicates if player won. true - won, false - lose
     /// </summary>
     public event Action<bool> OnCombatEnded;
+    public event Action OnTurnEnded;
     #endregion
 
     #region init

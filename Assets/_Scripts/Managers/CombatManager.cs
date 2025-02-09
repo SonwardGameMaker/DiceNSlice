@@ -22,6 +22,7 @@ public class CombatManager : MonoBehaviour, ICombatManager
 
     // Combat flow
     public event Action<bool> OnCombatEnded;
+    public event Action OnTurnEnded;
     #endregion
 
     #region init
@@ -186,7 +187,13 @@ public class CombatManager : MonoBehaviour, ICombatManager
 
     private void OnTurnEndedHandler()
     {
-
+        // TODO, maybe make some checks in combat lists
+        if (_combatLists.PresentEnemies.Count == 0)
+            OnCombatEnded?.Invoke(true);
+        else if (_combatLists.PresentHeroes.Count == 0)
+            OnCombatEnded?.Invoke(false);
+        else
+            OnTurnEnded?.Invoke();
     }
 
     private void OnHeroActivatedHandlder(Hero hero)

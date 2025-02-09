@@ -28,6 +28,8 @@ public class CombatCharacterLists : ICombatCharacterLists
     public event Action<Character, bool> OnCharacterCreated;
     public event Action<Character> OnCharacterDeleted;
     public event Action<Character> OnCharacterChanged;
+    public event Action OnHeroesEneded;
+    public event Action OnEnemiesEnded;
     #endregion
 
     #region init
@@ -98,6 +100,8 @@ public class CombatCharacterLists : ICombatCharacterLists
         _presentHeroes.Remove(hero);
         OnCharacterLeaveScene?.Invoke(hero);
         hero.OnCharacterChanged -= OnCharacterChangedHandler;
+        if (_presentHeroes.Count == 0)
+            OnHeroesEneded?.Invoke();
     }
     #endregion
 
@@ -159,6 +163,8 @@ public class CombatCharacterLists : ICombatCharacterLists
         enemy.OnCharacterChanged -= OnCharacterChangedHandler;
         TryGetEnemyFromReinforcements();
         OnCharacterLeaveScene?.Invoke(enemy);
+        if (_presentEnemies.Count == 0)
+            OnEnemiesEnded?.Invoke();
     }
 
     #endregion

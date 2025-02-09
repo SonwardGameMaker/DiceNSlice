@@ -17,8 +17,7 @@ public class UiManager : MonoBehaviour, IUiManager
     [SerializeField] private VerticalLayoutGroup _heroes;
     [SerializeField] private VerticalLayoutGroup _enemies;
     [SerializeField] private ButtonUiController _buttons;
-    // debug
-    [SerializeField] private TurnsDisplay _turnsDisplay;
+    [SerializeField] private CombatDataDisplay _combatDataDisplay;
 
     [Header("Components")]
     [SerializeField] private InputHandler _inputHandler;
@@ -68,6 +67,9 @@ public class UiManager : MonoBehaviour, IUiManager
         {
             _combatManager.OnHeroActivated += OnHeroActivatedHandler;
             _combatManager.OnHeroDeactivated += OnHeroDeactivatedHandler;
+            _combatManager.OnTurnEnded += OnTurnEndedHandler;
+
+            _combatManager.OnCombatEnded += OnCombatEndedHandler;
         }
     }
 
@@ -75,7 +77,7 @@ public class UiManager : MonoBehaviour, IUiManager
     {
         CharacterFrameParamsSingleton.Instance.Setup();
 
-        _turnsDisplay.Setup();
+        _combatDataDisplay.Setup();
 
         deltaMove = _heroFramePrefab.GetComponent<RectTransform>().sizeDelta.x / _deltaMoveCoef;
         _characterFrames = new List<CharacterFrame>();
@@ -105,6 +107,7 @@ public class UiManager : MonoBehaviour, IUiManager
         {
             _combatManager.OnHeroActivated -= OnHeroActivatedHandler;
             _combatManager.OnHeroDeactivated -= OnHeroDeactivatedHandler;
+            _combatManager.OnTurnEnded -= OnTurnEndedHandler;
         }
     }
     #endregion
@@ -245,5 +248,12 @@ public class UiManager : MonoBehaviour, IUiManager
     // Dices
     private void OnDiceChangedHandler(Dice dice)
         => UpdateCharacterDice(dice.Owner);
+
+    // Combat flow
+    private void OnTurnEndedHandler()
+        => _combatDataDisplay.TurnsDisplay.SetCountText();
+
+    private void OnCombatEndedHandler(bool isVictory)
+        => _combatDataDisplay.GameEndBoard.Show(isVictory);
     #endregion
 }
