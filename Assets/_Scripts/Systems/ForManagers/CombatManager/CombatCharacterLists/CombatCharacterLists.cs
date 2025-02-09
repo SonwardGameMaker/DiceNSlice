@@ -41,6 +41,7 @@ public class CombatCharacterLists : ICombatCharacterLists
         _deadHeroes = new List<Hero>();
 
         _currentPoolEnemySize = 0;
+        _reinforcementEnemies = new List<Enemy>();
         if (enemies == null)
             enemies = new List<Enemy>();
         else
@@ -175,7 +176,7 @@ public class CombatCharacterLists : ICombatCharacterLists
 
         int activeSizePull = _currentPoolEnemySize;
         int count = 0;
-        while (activeSizePull <= MaxPoolEnemySize)
+        while (activeSizePull <= MaxPoolEnemySize && count < enemies.Count)
         {
             AddToActive();
             count++;
