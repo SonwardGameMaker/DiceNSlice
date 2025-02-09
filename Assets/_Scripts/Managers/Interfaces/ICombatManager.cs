@@ -10,6 +10,8 @@ public interface ICombatManager
     // States
     public event Action OnPreparingStateStarts;
     public event Action OnRollingStateStarts;
+    public event Action OnOffCombatStateStarts;
+    public event Action OnOffCombatStateEnds;
 
     // Characters
     public event Action<Hero> OnHeroActivated;

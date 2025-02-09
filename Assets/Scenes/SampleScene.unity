@@ -1727,11 +1727,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4400c92d4bb3a594fa9a3f25e2c35223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CharacterManager: {fileID: 356902249}
-  DiceManager: {fileID: 1513609824}
-  CombatManager: {fileID: 1868417864}
-  UiManager: {fileID: 915429346}
-  InputManager: {fileID: 1901811588}
+  _characterManager: {fileID: 356902249}
+  _diceManager: {fileID: 1513609824}
+  _combatManager: {fileID: 1868417864}
+  _uiManager: {fileID: 915429346}
+  _inputManager: {fileID: 1901811588}
   _initSO: {fileID: 11400000, guid: a150d19de834b0d4bbc83f21d08495ea, type: 2}
 --- !u!1 &1919680747
 GameObject:

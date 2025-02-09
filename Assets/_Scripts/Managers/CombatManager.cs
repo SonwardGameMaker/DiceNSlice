@@ -15,6 +15,8 @@ public class CombatManager : MonoBehaviour, ICombatManager
     // States
     public event Action OnPreparingStateStarts;
     public event Action OnRollingStateStarts;
+    public event Action OnOffCombatStateStarts;
+    public event Action OnOffCombatStateEnds;
 
     // Characters
     public event Action<Hero> OnHeroActivated;
@@ -51,6 +53,7 @@ public class CombatManager : MonoBehaviour, ICombatManager
         SubscribeToRollingState();
         SubscribeToIdleState();
         SubscribeToAbilityActiveState();
+        SubscribeToOffCombatState();
 
         void SubscribeToPreparingState()
         {
@@ -80,6 +83,14 @@ public class CombatManager : MonoBehaviour, ICombatManager
 
             abilitActiveState.OnHeroDeactivated += OnHeroDeactivatedHandlder;
         }
+
+        void SubscribeToOffCombatState()
+        {
+            OffCombatState offCombatState = _stateMachine.GetState<OffCombatState>();
+
+            offCombatState.OnOffCombatStateStarts += OnOffCombatStateStartsHandler;
+            offCombatState.OnOffCombatStateEnds += OnOffCombatStateEndedHandler;
+        }
     }
 
     private void OnDestroy()
@@ -90,6 +101,7 @@ public class CombatManager : MonoBehaviour, ICombatManager
         UnsubscribeToRollingState();
         UnsubscribeToIdleState();
         UnsubscribeToAbilityActiveState();
+        UnsubscrideToOffCombatState();
 
         _stateMachine.OnTurnEnded -= OnTurnEndedHandler;
 
@@ -127,6 +139,14 @@ public class CombatManager : MonoBehaviour, ICombatManager
             _characterManager.OnCharacterCreated -= OnCharacterCreatedHandler;
             _characterManager.OnCharacterDeleted -= OnCharacterDeletelHandler;
             _characterManager.OnCharacterChanged -= OnCharacterChangedHandler;
+        }
+
+        void UnsubscrideToOffCombatState()
+        {
+            OffCombatState offCombatState = _stateMachine.GetState<OffCombatState>();
+
+            offCombatState.OnOffCombatStateStarts -= OnOffCombatStateStartsHandler;
+            offCombatState.OnOffCombatStateEnds -= OnOffCombatStateEndedHandler;
         }
     }
     #endregion
@@ -201,5 +221,11 @@ public class CombatManager : MonoBehaviour, ICombatManager
 
     private void OnHeroDeactivatedHandlder(Hero hero)
         => OnHeroDeactivated?.Invoke(hero);
+
+    private void OnOffCombatStateStartsHandler()
+    => OnOffCombatStateStarts?.Invoke();
+
+    private void OnOffCombatStateEndedHandler()
+        => OnOffCombatStateEnds?.Invoke();
     #endregion
 }

@@ -28,6 +28,7 @@ public class CombatStateMachine
         _stateList.Add(new IdleState(this, combatCharacterLists));
         _stateList.Add(new AbilitActiveState(this));
         _stateList.Add(new EnemyTurnState(this));
+        _stateList.Add(new OffCombatState(this));
     }
 
     public void Setup<T>() where T : CombatState
