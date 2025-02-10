@@ -26,7 +26,7 @@ public class GameSystemsManager
 
         characterManager.Setup(initSO.Heroes, initSO.Enemies);
         combatManager.Setup(characterManager);
-        combatManager.Setup(characterManager);
+        diceManager.Setup(combatManager);
         uiManager.Setup(combatManager, diceManager, inputManager);
     }
 

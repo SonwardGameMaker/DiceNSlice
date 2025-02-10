@@ -200,7 +200,11 @@ public class CombatManager : MonoBehaviour, ICombatManager
 
     // States
     private void OnPreparingStateStartsHandler()
-        => OnPreparingStateStarts?.Invoke();
+    {
+        Debug.Log($"{nameof(CombatManager)}");
+        OnPreparingStateStarts?.Invoke();
+    }
+        
 
     private void OnRollingStateStartsHandler()
         => OnRollingStateStarts?.Invoke();

@@ -175,6 +175,7 @@ public class DiceManager : MonoBehaviour, IDiceManager
     #region event handlers
     private void OnPreparingStateStartsHandler()
     {
+        Debug.Log($"Current state is {nameof(CombatManager.StateMachine.CurrentState)}");
         RollEnemyDices();
         _combatManager.Next();
     }
